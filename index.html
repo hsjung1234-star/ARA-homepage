@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARA Electronics - Industrial Cable Harness Assembly</title>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 4px; /* 가로 스크롤바 높이 줄임 */
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e3a8a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1e40af;
+        }
+
+        /* 가로 스크롤 메뉴용 (스크롤바 숨김 처리 옵션) */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .dropdown-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .group:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .hero-pattern {
+            background-color: #0f172a;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231e293b' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Hero rolling background */
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transform: scale(1.06);
+            transition: opacity 1000ms ease-in-out, transform 8000ms ease-in-out;
+            will-change: opacity, transform;
+        }
+        .hero-slide.is-active {
+            opacity: 1;
+            transform: scale(1.12);
+        }
+        .hero-vignette {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(1200px 600px at 30% 30%, rgba(59,130,246,0.20), transparent 60%),
+                radial-gradient(900px 500px at 70% 60%, rgba(0,0,0,0.35), transparent 60%);
+            pointer-events: none;
+        }
+
+        /* --- STYLES FOR PRODUCT VIEW --- */
+        .bg-dot-pattern {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // --- Icon Components ---
+        const Menu = ({ size = 24, color = "currentColor", ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+        );
+        const ChevronDown = ({ size = 24, color = "currentColor", ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="6 9 12 15 18 9"></polyline></svg>
+        );
+        const ChevronRight = ({ size = 24, color = "currentColor", ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="9 18 15 12 9 6"></polyline></svg>
+        );
+        const Phone = ({ size = 24, color = "currentColor", className, ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        );
+        const Mail = ({ size = 24, color = "currentColor", className, ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        );
+        const MapPin = ({ size = 24, color = "currentColor", className, ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        );
+        const CheckCircle = ({ size = 24, color = "currentColor", ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        );
+        const ArrowRight = ({ size = 24, color = "currentColor", ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        );
+
+        // --- Data Definitions ---
+        const productData = [
+            {
+                id: 'camera-link',
+                name: 'Camera Link Cable',
+                image: './ara_site_assets/1.jpg?v=20260119',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=Camera+Link+Cable',
+                desc: '산업용 고속 카메라 영상 전송을 위한 안정적인 솔루션',
+                details: {
+                    featureImage: 'ara_site_assets/img_01.png',
+                    connector: 'SDR/SDR, MDR/MDR, SDR/MDR 26pin',
+                    spec: '28AWG OD:9.1mm',
+                    shell: 'PVC, TPE',
+                    foldingTime: '1,700만 회 (데이터시트 참조)',
+                    features: [
+                        'PoCL (Power over Camera Link) 호환',
+                        '내유성 및 고유연성 PVC 피복 사용',
+                        '편조 차폐 및 다중 차폐 구조로 노이즈 간섭 최소화',
+                        '산업용 카메라 보드 장비 전용 설계, 낮은 신호 감쇠',
+                        '동축 케이블 전송으로 안정적인 이미지 전송 성능 보장',
+                        '내굴곡성 및 미끄럼 저항이 뛰어난 특수 폴리머 사용',
+                        'UL, CE 인증'
+                    ],
+                    application: 'Balser, Dalsa, Sony, JAI, AVT, PointGrey, OMRON, Vieworks',
+                    customized: [
+                        '1-5, 6-15 미터 (다양한 길이 맞춤 제작 가능)',
+                        '베이요넷 고정 또는 나사 고정 방식 선택 가능',
+                        '엘보 연결(ㄱ자) 또는 직선형 플러그 (멀티앵글, 스트레이트 타입)',
+                        '일체형 몰딩 커넥터 또는 조립형 하우징',
+                        'OEM 맞춤 제작'
+                    ]
+                }
+            },
+            {
+                id: 'high-flex-gige',
+                name: 'High Flex GigE Cable',
+                image: './ara_site_assets/2.png?v=20260119',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=High+Flex+GigE',
+                desc: '기가비트 네트워크를 지원하는 고유연성 산업용 케이블',
+                details: {
+                    featureImage: 'ara_site_assets/img_02.png',
+                    connector: 'RJ45 8P8C (CAT5E, CAT7, CAT8)',
+                    spec: '24~26AWG OD:6.2-7.0mm',
+                    shell: 'PVC, TPE',
+                    foldingTime: '4,000만 회 (데이터시트 참조)',
+                    features: [
+                        '표준 RJ45 인터페이스 채택, 기가비트 네트워크 지원 (1G, 10G)',
+                        '신호 간섭 및 크로스토크 없음',
+                        '1G/10G 고속 데이터 전송 실현',
+                        '굴곡, 비틀림, 견인, 기름, 추위, 난연성 우수 (탱크 체인 적용 적합)',
+                        '방수, 내유성, 내한성, 내자외선성, 내마모성',
+                        '트위스트 페어 쉴드 구조로 부드럽고 안정적인 신호 전송 성능',
+                        'UL, CE 인증'
+                    ],
+                    application: 'Balser, Dalsa, Sony, JAI, AVT, PointGrey, HIK, IDS, Vieworks, The Imaging Source, Crevis',
+                    customized: [
+                        '1-100 미터 (다양한 길이 맞춤 제작 가능)',
+                        '베이요넷 고정 또는 나사 고정 방식 선택 가능',
+                        '엘보 연결(ㄱ자) 또는 직선형 플러그',
+                        '일체형 몰딩 커넥터 또는 조립형 하우징',
+                        'OEM 맞춤 제작'
+                    ]
+                }
+            },
+            {
+                id: 'usb-camera',
+                name: 'USB Camera Cable',
+                image: './ara_site_assets/3.png?v=20260119',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=USB+Camera+Cable',
+                desc: '고속 데이터 전송 및 핫스왑을 지원하는 USB 솔루션',
+                details: {
+                    featureImage: 'ara_site_assets/img_03.png',
+                    connector: 'USB3.0~3.2 Micro-B to A, B to A, C to A',
+                    spec: '28AWG OD:6.5mm (옵션: 24/28AWG OD:5.3mm)',
+                    shell: 'PVC, TPE',
+                    foldingTime: '1,700만 회',
+                    features: [
+                        '표준 USB 인터페이스, 고속 데이터 전송, 핫스왑 지원',
+                        '내굴곡성, 내끌림성 (장비 드래그 체인 적용 충족)',
+                        '순동 도체, 알루미늄 호일 편조 이중 차폐',
+                        '감쇠 없는 고속 신호 전송',
+                        '우수한 노이즈 내성 및 내굴곡성',
+                        '산업용 특수 환경을 위한 내유성 외피',
+                        '환경 ISO 및 RoHS 인증 준수',
+                        'UL, CE 인증'
+                    ],
+                    application: 'Balser, Dalsa, Sony, AVT, PointGrey, IDS, Ximea, The Imaging Source, PixeLINK, STC, ARTRAY, OMRON',
+                    customized: [
+                        '1-5, 6-45 미터 (다양한 길이 및 AOC 제작 가능)',
+                        '베이요넷 고정 또는 나사 고정 방식 선택 가능',
+                        '엘보 연결(ㄱ자) 또는 직선형 플러그',
+                        '일체형 몰딩 커넥터 또는 조립형 하우징',
+                        'OEM 맞춤 제작'
+                    ]
+                }
+            },
+            {
+                id: 'industrial-ethernet',
+                name: 'Industrial Ethernet Cable',
+                image: './ara_site_assets/4.png?v=20260119',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=Industrial+Ethernet',
+                desc: '산업 자동화 환경에 최적화된 내구성 강한 이더넷 케이블',
+                details: {
+                    featureImage: 'ara_site_assets/img_04.png',
+                    connector: 'M12 8PIN/RJ45, M12 4PIN/RJ45, RJ45/RJ45, M12 4PIN/M12 4PIN, DB25/M12 17PIN, DB 15PIN/M12 8PIN 등',
+                    spec: '24~26AWG OD:6.2-7.0mm',
+                    shell: 'PVC, TPE',
+                    foldingTime: '4,000만 회',
+                    features: [
+                        '고유연성 토우라인 산업용 이더넷 케이블, 내마모성 및 내굴곡성',
+                        '고유연성 외피, 다중 가닥 순동 도체',
+                        '다중 차폐 구조로 고속에서 안정적인 신호 전송',
+                        '우수한 노이즈 내성 및 내굴곡성',
+                        '산업용 특수 환경을 위한 내유성 외피',
+                        '환경 ISO 및 RoHS 인증 준수',
+                        '다양한 산업 자동화 드래그 체인 환경 및 로봇 팔에 적합',
+                        'UL, CE 인증'
+                    ],
+                    application: 'Cognex, OMRON, Zebra, HIK, SICL',
+                    customized: [
+                        '1-100 미터 (다양한 길이 맞춤 제작 가능)',
+                        '베이요넷 고정 또는 나사 고정 방식 선택 가능',
+                        '엘보 연결(ㄱ자) 또는 직선형 플러그',
+                        '일체형 몰딩 커넥터 또는 조립형 하우징',
+                        'OEM 맞춤 제작'
+                    ]
+                }
+            },
+            {
+                id: 'io-cable',
+                name: 'I/O Cable',
+                image: './ara_site_assets/5.png?v=20260119',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=I%2FO+Cable',
+                desc: '다양한 제어 신호 전송을 위한 입출력 케이블',
+                details: {
+                    featureImage: 'ara_site_assets/img_05.png',
+                    connector: 'HRS 6PIN, HRS 8PIN, HRS 12PIN, M12, RS232',
+                    spec: '주문 사양 (Custom)',
+                    shell: 'PVC, TPE',
+                    foldingTime: '3,000~4,000만 회',
+                    features: [
+                        '일본 히로세(Hirose) 정품 또는 국내 프리미엄 브랜드 커넥터 사용',
+                        '고유연성 외피, 다중 가닥 순동 도체',
+                        '다중 차폐 구조로 감쇠 없는 고속 신호 전송',
+                        '우수한 노이즈 내성 및 이동 내구성',
+                        '산업용 특수 환경을 위한 내유성 외피',
+                        '환경 ISO 및 RoHS 인증 준수',
+                        'UL, CE 인증'
+                    ],
+                    application: 'Balser, Panasonic, Sony, Dalsa, Baumer, Cognex, Zebra, HIK, Crevis',
+                    customized: [
+                        '1-100 미터 (다양한 길이 맞춤 제작 가능)',
+                        '베이요넷 고정 또는 나사 고정 방식 선택 가능',
+                        '엘보 연결(ㄱ자) 또는 직선형 플러그',
+                        '일체형 몰딩 커넥터 또는 조립형 하우징',
+                        'OEM 맞춤 제작'
+                    ]
+                }
+            },
+            {
+                id: 'coaxpress',
+                name: 'CoaXPress Cable',
+                image: './ara_site_assets/6.webp?v=20260119',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=CoaXPress+Cable',
+                desc: '차세대 고속 영상 전송 인터페이스 (6G, 12G)',
+                details: {
+                    featureImage: 'ara_site_assets/img_06.png',
+                    connector: 'BNC/DIN/HD-BNC to BNC/DIN/HD-BNC, R/A',
+                    spec: 'COAXIAL/OD: 7.2/7.5mm',
+                    shell: 'PVC, TPE',
+                    foldingTime: '1,500만 회',
+                    features: [
+                        'CoaXPress 6G, 12G 지원',
+                        '동작 온도: -20~105°C',
+                        '산업용 애플리케이션을 위한 높은 내구성',
+                        '은도금/더블쉴드',
+                        'UL, CE 인증'
+                    ],
+                    application: 'JAI, Optronis, Vieworks, Crevis, HIK',
+                    customized: [
+                        '길이 맞춤 제작 가능',
+                        '엘보 연결(ㄱ자) 또는 직선형 플러그',
+                        'OEM 맞춤 제작'
+                    ]
+                }
+            }
+        ];
+
+        // --- Main App Component ---
+        const App = () => {
+            const [currentPage, setCurrentPage] = useState('home');
+            const [selectedProduct, setSelectedProduct] = useState(productData[0]);
+            const [isScrolled, setIsScrolled] = useState(false);
+            const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+            // ✅ Hero rolling background (your images)
+            const heroImages = useMemo(() => ([
+                "ara_site_assets/img_07.jpg",
+                "ara_site_assets/img_08.jpg",
+                "ara_site_assets/img_09.jpg",
+                "ara_site_assets/img_10.webp",
+                "ara_site_assets/img_11.jpg",
+                "ara_site_assets/img_12.png",
+                "ara_site_assets/img_13.png"
+            ]), []);
+
+            const [heroIndex, setHeroIndex] = useState(0);
+
+            useEffect(() => {
+                const handleScroll = () => {
+                    setIsScrolled(window.scrollY > 20);
+                };
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            useEffect(() => {
+                if (currentPage !== 'home') return;
+                if (!heroImages || heroImages.length === 0) return;
+
+                const interval = setInterval(() => {
+                    setHeroIndex((prev) => (prev + 1) % heroImages.length);
+                }, 4500);
+
+                return () => clearInterval(interval);
+            }, [currentPage, heroImages]);
+
+            const navigateTo = (page, product = null) => {
+                setCurrentPage(page);
+                if (product) {
+                    setSelectedProduct(product);
+                }
+                setIsMobileMenuOpen(false);
+                window.scrollTo(0, 0);
+            };
+
+            // --- Views ---
+
+            const HomeView = () => (
+                <div className="animate-fade-in">
+                    {/* Hero Section (Rolling Background) */}
+                    <section className="relative min-h-[85vh] md:min-h-[92vh] lg:min-h-screen flex items-center text-white overflow-hidden hero-pattern">
+                        {/* Background Image */}
+                        <div
+                          className="absolute inset-0 bg-cover bg-center transition-opacity duration-700"
+                          style={{ backgroundImage: `url(${heroImages[heroIndex]})` }}
+                        />
+
+                        {/* Overlay (keep tone similar to original) */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+
+                        {/* Slide Dots (B2S-style) */}
+                        <div className="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-3">
+                          {heroImages.map((_, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              aria-label={`Slide ${i + 1}`}
+                              onClick={() => setHeroIndex(i)}
+                              className={`h-2.5 w-2.5 rounded-full border border-white/70 transition-all ${heroIndex === i ? 'bg-white' : 'bg-white/20 hover:bg-white/40'}`}
+                            />
+                          ))}
+                        </div>
+
+                        {/* Content */}
+                        <div className="relative z-20 w-full h-full flex items-center">
+                          <div className="w-full px-6 md:px-16 lg:px-24">
+                            <div className="max-w-3xl text-left">
+                              <div className="text-xs md:text-sm font-semibold tracking-[0.25em] uppercase text-white/90">
+                                INDUSTRIAL AUTOMATION • MACHINE VISION • ROBOTICS
+                              </div>
+                              <h1 className="mt-4 text-4xl md:text-6xl font-extrabold leading-tight italic">
+                                Reliable Connections<br />For Your Success
+                              </h1>
+                              <p className="mt-4 text-base md:text-lg text-white/90 md:whitespace-nowrap">
+                                ARA Electronics는 산업 자동화, 머신 비전, 로봇 산업을 위한 최상의 케이블 솔루션을 제공합니다.
+                              </p>
+                              <div className="mt-8 flex flex-wrap gap-3">
+                                <button
+                                  onClick={() => navigateTo('product')}
+                                  className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-full font-semibold transition"
+                                >
+                                  제품정보 보기
+                                </button>
+                                <button
+                                  onClick={() => navigateTo('custom')}
+                                  className="bg-white/10 hover:bg-white/20 border border-white/30 px-6 py-3 rounded-full font-semibold transition"
+                                >
+                                  커스텀제작 문의
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </section>
+
+                    {/* Features Grid */}
+                    <section className="py-20 bg-gray-50">
+                        <div className="container mx-auto px-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow border-t-4 border-blue-600">
+                                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mb-6">
+                                        <CheckCircle size={24} />
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-3">High Quality</h3>
+                                    <p className="text-gray-600">엄격한 품질 관리와 테스트를 거친 최상급 자재만을 사용하여 제작합니다.</p>
+                                </div>
+                                <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow border-t-4 border-blue-600">
+                                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mb-6">
+                                        <CheckCircle size={24} />
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-3">High Flexibility</h3>
+                                    <p className="text-gray-600">수천만 회의 굴곡 테스트를 견디는 고유연성 케이블을 제공합니다.</p>
+                                </div>
+                                <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow border-t-4 border-blue-600">
+                                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mb-6">
+                                        <CheckCircle size={24} />
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-3">Customization</h3>
+                                    <p className="text-gray-600">고객의 요구사항에 맞춘 다양한 길이와 커넥터 옵션을 제공합니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            );
+
+            const CompanyView = () => (
+                <div className="animate-fade-in pt-24 pb-20">
+                    <div className="container mx-auto px-4">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="text-center mb-16">
+                                <h2 className="text-3xl font-bold text-gray-900 mb-4">회사 소개</h2>
+                                <div className="w-20 h-1 bg-blue-600 mx-auto"></div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
+                                <div>
+                                    <img 
+                                        src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                                        alt="Factory" 
+                                        className="rounded-lg shadow-xl"
+                                    />
+                                </div>
+                                <div className="space-y-6 text-gray-700 leading-relaxed">
+                                    <h3 className="text-2xl font-bold text-blue-900">Professional Cable Supplier</h3>
+                                    <p>
+                                        ARA Electronic Technology Co., Ltd.는 2015년 한국에 설립되었으며, 산업용 케이블의 개발 및 제조를 전문으로 하는 기업입니다.
+                                    </p>
+                                    <p>
+                                        ARA의 주요 제품으로는 산업용 로봇 케이블, 산업용 카메라 케이블, 서보 모터 케이블, 산업 현장용 통신 및 제어 케이블이 있으며, 이는 산업 자동화, 기계 장비, 로봇, 서보 시스템, CNC, 통신 서비스 등 다양한 분야에 널리 사용되고 있습니다.
+                                    </p>
+                                    <p>
+                                        우리는 고객의 제품이 최고의 성능을 발휘할 수 있도록 더 신뢰할 수 있는 연결 솔루션을 제공하기 위해 끊임없이 노력하고 있습니다.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                                <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">주요 취급 품목</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    {productData.map(product => (
+                                        <div key={product.id} className="flex items-center gap-2 p-3 bg-white rounded shadow-sm">
+                                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                            <span className="text-sm font-medium text-gray-700">{product.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            // --- REDESIGNED PRODUCT VIEW (With Sticky Nav) ---
+            const ProductView = () => (
+                <div className="animate-fade-in pt-0 lg:pt-24 pb-20 bg-dot-pattern min-h-screen">
+
+                    {/* MOBILE STICKY MENU: Always Visible on small screens */}
+                    <div className="lg:hidden sticky top-[60px] z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200 overflow-x-auto no-scrollbar whitespace-nowrap py-3 px-4 shadow-md transition-all">
+                        <div className="flex space-x-2">
+                        {productData.map(product => {
+                            const isActive = selectedProduct.id === product.id;
+                            return (
+                                <button
+                                    key={product.id}
+                                    onClick={() => {
+                                        setSelectedProduct(product);
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    }}
+                                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                                        isActive 
+                                        ? 'bg-blue-600 text-white shadow-md' 
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    {product.name}
+                                </button>
+                            );
+                        })}
+                        </div>
+                    </div>
+
+                    <div className="container mx-auto px-4 mt-8 lg:mt-0">
+                        <div className="flex flex-col lg:flex-row gap-8 items-start relative">
+
+                            {/* Modern Sidebar (Desktop: Sticky) */}
+                            {/* lg:block ensures it's hidden on mobile (since we use the top bar) and shown on desktop */}
+                            <div className="hidden lg:block w-72 flex-shrink-0 sticky top-24 z-10 h-screen overflow-y-auto no-scrollbar pb-20">
+                                <div className="glass-panel rounded-2xl p-6 shadow-lg shadow-blue-900/5">
+                                    <h3 className="font-bold text-gray-400 text-xs uppercase tracking-wider mb-4 px-2">Products Lineup</h3>
+                                    <ul className="space-y-2">
+                                        {productData.map(product => {
+                                            const isActive = selectedProduct.id === product.id;
+                                            return (
+                                                <li key={product.id}>
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedProduct(product);
+                                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                                        }}
+                                                        className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-between group ${
+                                                            isActive 
+                                                            ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 translate-x-1' 
+                                                            : 'hover:bg-white hover:text-blue-700 text-gray-600 hover:shadow-sm'
+                                                        }`}
+                                                    >
+                                                        <span className="font-medium text-sm">{product.name}</span>
+                                                        {isActive && <ChevronRight size={16} />}
+                                                    </button>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+
+                                    {/* Contact Banner in Sidebar */}
+                                    <div className="mt-8 p-4 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl text-white text-center">
+                                        <p className="text-xs text-slate-400 mb-2">원하는 사양이 없으신가요?</p>
+                                        <p className="font-bold text-sm mb-3">커스텀 제작이 가능합니다</p>
+                                        <button 
+                                            onClick={() => navigateTo('contact')}
+                                            className="text-xs bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg transition-colors w-full border border-white/10"
+                                        >
+                                            문의하기
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Main Content Area */}
+                            <div className="flex-1 min-w-0 pb-20">
+                                {/* Header Section */}
+                                <div className="mb-8 pt-4 lg:pt-0">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wide">Industrial Grade</span>
+                                        <span className="text-gray-400 text-xs">Model: {selectedProduct.id.toUpperCase()}</span>
+                                    </div>
+                                    <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4 tracking-tight">{selectedProduct.name}</h2>
+                                    <p className="text-lg text-slate-600 max-w-2xl leading-relaxed">{selectedProduct.desc}</p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    {/* Image Card */}
+                                    <div className="glass-panel rounded-3xl p-2 shadow-xl shadow-slate-200/50 md:col-span-2 lg:col-span-1 min-h-[400px] flex items-center justify-center bg-white relative overflow-hidden group">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                        <img 
+                                            src={selectedProduct.image} 
+                                            alt={selectedProduct.name} 
+                                            onError={(e) => {
+                                                e.target.onerror = null; 
+                                                e.target.src = selectedProduct.fallbackImage;
+                                            }}
+                                            className="w-full h-full object-contain relative z-10 transform group-hover:scale-105 transition-transform duration-500"
+                                        />
+                                    </div>
+
+                                    {/* Key Specs Card (Bento Grid Style) */}
+                                    <div className="grid grid-cols-1 gap-4 content-start">
+                                        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                                            <h3 className="text-slate-400 text-xs font-bold uppercase mb-4 flex items-center gap-2">
+                                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div> Specifications
+                                            </h3>
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <div className="text-xs text-gray-400 mb-1">Connector Type</div>
+                                                    <div className="font-semibold text-slate-800 break-words">{selectedProduct.details.connector}</div>
+                                                </div>
+                                                <div className="h-px bg-slate-100"></div>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <div className="text-xs text-gray-400 mb-1">Wire Spec</div>
+                                                        <div className="font-medium text-slate-700">{selectedProduct.details.spec}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-xs text-gray-400 mb-1">Material</div>
+                                                        <div className="font-medium text-slate-700">{selectedProduct.details.shell}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Durability Highlight */}
+                                        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 shadow-lg shadow-blue-900/20 text-white flex flex-col justify-center relative overflow-hidden">
+                                            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl"></div>
+                                            <div className="relative z-10">
+                                                <div className="text-blue-100 text-xs font-bold uppercase mb-1">Bending Test</div>
+                                                <div className="text-3xl font-bold tracking-tight">{selectedProduct.details.foldingTime}</div>
+                                                <div className="text-blue-200 text-xs mt-1">Extreme durability guaranteed</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Features & Applications Grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                                    {/* Features */}
+                                    <div className="md:col-span-2 bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
+                                        <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                                            <CheckCircle className="text-blue-600" size={20} />
+                                            Key Features
+                                        </h3>
+                                        <div className="grid sm:grid-cols-2 gap-4">
+                                            {selectedProduct.details.features.map((feature, idx) => (
+                                                <div key={idx} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors">
+                                                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                                                    <span className="text-sm text-slate-600 leading-relaxed">{feature}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+
+
+                                        {selectedProduct.details.featureImage && (
+                                            <div className="mt-8">
+                                                <img
+                                                    src={selectedProduct.details.featureImage}
+                                                    alt={`${selectedProduct.name} 상세 이미지`}
+                                                    className="w-full rounded-xl border border-slate-100 shadow-sm"
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Customization & Applications */}
+                                    <div className="space-y-6">
+                                        {/* Custom Options */}
+                                        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200/60">
+                                            <h3 className="font-bold text-slate-800 mb-4 text-sm">Custom Options</h3>
+                                            <ul className="space-y-3">
+                                                {selectedProduct.details.customized.map((item, idx) => (
+                                                    <li key={idx} className="text-sm text-slate-600 flex items-center gap-2">
+                                                        <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
+                                                        {item}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+
+                                        {/* Compatible Brands */}
+                                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                                            <h3 className="font-bold text-slate-800 mb-4 text-sm">Compatible With</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {selectedProduct.details.application.split(',').map((brand, idx) => (
+                                                    <span key={idx} className="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded-full font-medium border border-slate-200">
+                                                        {brand.trim()}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const ContactView = () => (
+                <div className="animate-fade-in pt-24 pb-20">
+                    <div className="container mx-auto px-4">
+                        <div className="max-w-3xl mx-auto">
+                            <div className="text-center mb-12">
+                                <h2 className="text-3xl font-bold text-gray-900 mb-4">커스텀 제작 문의</h2>
+                                <p className="text-gray-600">특수 사양 케이블 및 대량 주문 제작에 대해 문의해 주시면 신속히 답변 드리겠습니다.</p>
+                            </div>
+
+                            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                                <div className="grid md:grid-cols-3 bg-blue-900 text-white">
+                                    <div className="p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-blue-800">
+                                        <Phone className="mb-3 opacity-80" size={32} />
+                                        <div className="text-sm opacity-70 mb-1">전화 문의</div>
+                                        <div className="font-bold">+82 070 4120 7771</div>
+                                    </div>
+                                    <div className="p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-blue-800">
+                                        <Mail className="mb-3 opacity-80" size={32} />
+                                        <div className="text-sm opacity-70 mb-1">이메일 문의</div>
+                                        <div className="font-bold">sales@araelectronics.com</div>
+                                    </div>
+                                    <div className="p-8 flex flex-col items-center justify-center text-center">
+                                        <MapPin className="mb-3 opacity-80" size={32} />
+                                        <div className="text-sm opacity-70 mb-1">방문 안내</div>
+                                        <div className="font-bold text-sm">경기도 부천시 평천로 850번길 19</div>
+                                    </div>
+                                </div>
+
+                                <div className="p-8 md:p-12">
+                                    <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">회사명</label>
+                                                <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="회사명을 입력하세요" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">담당자명</label>
+                                                <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="담당자 성함을 입력하세요" />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">이메일</label>
+                                                <input type="email" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="email@example.com" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">연락처</label>
+                                                <input type="tel" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="010-1234-5678" />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-2">문의 제품 / 사양</label>
+                                            <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all mb-4">
+                                                <option>제품을 선택해주세요</option>
+                                                {productData.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                                                <option value="custom">기타 / 커스텀 제작</option>
+                                            </select>
+                                            <textarea className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all h-32" placeholder="문의하실 내용을 자세히 적어주세요."></textarea>
+                                        </div>
+
+                                        <div className="text-center pt-4">
+                                            <button className="bg-blue-900 text-white font-bold py-4 px-12 rounded-lg hover:bg-blue-800 transition-colors shadow-lg w-full md:w-auto">
+                                                문의하기
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="min-h-screen flex flex-col font-sans text-gray-800 bg-white">
+                    {/* Header */}
+                    <header className={`fixed w-full z-50 transition-all duration-300 ${(isScrolled || currentPage !== 'home') ? 'bg-white shadow-md py-2' : 'bg-transparent py-4 text-white'}`}>
+                        <div className="container mx-auto px-4">
+                            <div className="flex justify-between items-center">
+                                {/* Logo */}
+                                <div 
+                                    className="cursor-pointer flex items-center gap-2"
+                                    onClick={() => navigateTo('home')}
+                                >
+                                    <div className={`font-bold text-2xl tracking-tighter ${(isScrolled || currentPage !== 'home') ? 'text-blue-900' : 'text-white'}`}>
+                                        ARA <span className="font-light">ELECTRONICS</span>
+                                    </div>
+                                </div>
+
+                                {/* Desktop Nav */}
+                                <nav className="hidden md:flex items-center space-x-8">
+                                    <button 
+                                        onClick={() => navigateTo('home')}
+                                        className={`font-medium hover:text-blue-400 transition-colors ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}
+                                    >
+                                        홈
+                                    </button>
+
+                                    <button 
+                                        onClick={() => navigateTo('company')}
+                                        className={`font-medium hover:text-blue-400 transition-colors ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}
+                                    >
+                                        회사소개
+                                    </button>
+
+                                    {/* Product Info with Mega Menu */}
+                                    <div className="relative group">
+                                        <button 
+                                            onClick={() => navigateTo('product', productData[0])}
+                                            className={`font-medium hover:text-blue-400 transition-colors flex items-center gap-1 py-4 ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}
+                                        >
+                                            제품정보 <ChevronDown size={14} />
+                                        </button>
+
+                                        {/* Dropdown Tree Menu (Header) */}
+                                        <div className="dropdown-menu absolute left-1/2 -translate-x-1/2 pt-2 w-64">
+                                            <div className="bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden py-2">
+                                                {productData.map(product => (
+                                                    <a 
+                                                        key={product.id}
+                                                        onClick={(e) => { e.preventDefault(); navigateTo('product', product); }}
+                                                        className="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer border-b border-gray-50 last:border-0 flex justify-between items-center group/item"
+                                                    >
+                                                        {product.name}
+                                                        <ChevronRight size={14} className="opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button 
+                                        onClick={() => navigateTo('contact')}
+                                        className={`font-medium hover:text-blue-400 transition-colors ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}
+                                    >
+                                        커스텀제작 문의
+                                    </button>
+                                </nav>
+
+                                {/* Mobile Menu Button */}
+                                <button 
+                                    className="md:hidden text-gray-500"
+                                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                >
+                                    <Menu size={24} color={(isScrolled || currentPage !== 'home') ? '#1e3a8a' : 'white'} />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Mobile Menu (Global Nav) */}
+                        {isMobileMenuOpen && (
+                            <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t">
+                                <div className="flex flex-col p-4 space-y-4">
+                                    <button onClick={() => navigateTo('home')} className="text-left font-medium text-gray-700">홈</button>
+                                    <button onClick={() => navigateTo('company')} className="text-left font-medium text-gray-700">회사소개</button>
+                                    <div className="pl-4 border-l-2 border-gray-100 space-y-2">
+                                        <div className="text-xs font-bold text-gray-400 uppercase mb-2">제품 바로가기</div>
+                                        {productData.map(product => (
+                                            <button 
+                                                key={product.id}
+                                                onClick={() => navigateTo('product', product)}
+                                                className="block text-sm text-gray-600 py-1"
+                                            >
+                                                {product.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <button onClick={() => navigateTo('contact')} className="text-left font-medium text-blue-600">커스텀제작 문의</button>
+                                </div>
+                            </div>
+                        )}
+                    </header>
+
+                    {/* Main Content */}
+                    <main className="flex-grow">
+                        {currentPage === 'home' && <HomeView />}
+                        {currentPage === 'company' && <CompanyView />}
+                        {currentPage === 'product' && <ProductView />}
+                        {currentPage === 'contact' && <ContactView />}
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="bg-gray-900 text-white pt-16 pb-8">
+                        <div className="container mx-auto px-4">
+                            <div className="grid md:grid-cols-4 gap-8 mb-12">
+                                <div className="col-span-1 md:col-span-2">
+                                    <h2 className="text-2xl font-bold mb-4 tracking-tighter">ARA ELECTRONICS</h2>
+                                    <p className="text-gray-400 max-w-sm mb-6">
+                                        산업 자동화 및 머신 비전을 위한 최고의 케이블 솔루션을 제공합니다. 고객의 성공을 위한 신뢰할 수 있는 파트너가 되겠습니다.
+                                    </p>
+                                    <div className="flex gap-4">
+                                        <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors cursor-pointer">
+                                            <Phone size={18} />
+                                        </div>
+                                        <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors cursor-pointer">
+                                            <Mail size={18} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="font-bold text-lg mb-4">빠른 링크</h3>
+                                    <ul className="space-y-2 text-gray-400">
+                                        <li><button onClick={() => navigateTo('company')} className="hover:text-blue-400 transition-colors">회사소개</button></li>
+                                        <li><button onClick={() => navigateTo('product', productData[0])} className="hover:text-blue-400 transition-colors">제품정보</button></li>
+                                        <li><button onClick={() => navigateTo('contact')} className="hover:text-blue-400 transition-colors">견적문의</button></li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h3 className="font-bold text-lg mb-4">연락처 정보</h3>
+                                    <ul className="space-y-3 text-gray-400">
+                                        <li className="flex items-start gap-3">
+                                            <MapPin size={18} className="mt-1 flex-shrink-0" />
+                                            <span>경기도 부천시 평천로 850번길 19</span>
+                                        </li>
+                                        <li className="flex items-center gap-3">
+                                            <Phone size={18} className="flex-shrink-0" />
+                                            <span>070-4120-7771</span>
+                                        </li>
+                                        <li className="flex items-center gap-3">
+                                            <Mail size={18} className="flex-shrink-0" />
+                                            <span>sales@araelectronics.com</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+                                <p>&copy; 2024 ARA Electronics. All rights reserved.</p>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
