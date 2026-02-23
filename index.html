@@ -155,7 +155,7 @@
             {
                 id: 'camera-link',
                 name: 'Camera Link Cable',
-                image: './ara_site_assets/1.jpg?v=20260119',
+                image: './ara_site_assets/camera_link.jpg?v=20260119',
                 fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=Camera+Link+Cable',
                 desc: '산업용 고속 카메라 영상 전송을 위한 안정적인 솔루션',
                 details: {
@@ -186,7 +186,7 @@
             {
                 id: 'high-flex-gige',
                 name: 'High Flex GigE Cable',
-                image: './ara_site_assets/2.png?v=20260119',
+                image: './ara_site_assets/high_flex_gige.jpg?v=20260119',
                 fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=High+Flex+GigE',
                 desc: '기가비트 네트워크를 지원하는 고유연성 산업용 케이블',
                 details: {
@@ -217,7 +217,7 @@
             {
                 id: 'usb-camera',
                 name: 'USB Camera Cable',
-                image: './ara_site_assets/3.png?v=20260119',
+                image: './ara_site_assets/usb_camera.jpg?v=20260119',
                 fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=USB+Camera+Cable',
                 desc: '고속 데이터 전송 및 핫스왑을 지원하는 USB 솔루션',
                 details: {
@@ -249,7 +249,7 @@
             {
                 id: 'industrial-ethernet',
                 name: 'Industrial Ethernet Cable',
-                image: './ara_site_assets/4.png?v=20260119',
+                image: './ara_site_assets/industrial_ethernet.jpg?v=20260119',
                 fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=Industrial+Ethernet',
                 desc: '산업 자동화 환경에 최적화된 내구성 강한 이더넷 케이블',
                 details: {
@@ -281,7 +281,7 @@
             {
                 id: 'io-cable',
                 name: 'I/O Cable',
-                image: './ara_site_assets/5.png?v=20260119',
+                image: './ara_site_assets/io_cable.jpg?v=20260119',
                 fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=I%2FO+Cable',
                 desc: '다양한 제어 신호 전송을 위한 입출력 케이블',
                 details: {
@@ -312,7 +312,7 @@
             {
                 id: 'coaxpress',
                 name: 'CoaXPress Cable',
-                image: './ara_site_assets/6.webp?v=20260119',
+                image: './ara_site_assets/coaxpress.jpg?v=20260119',
                 fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=CoaXPress+Cable',
                 desc: '차세대 고속 영상 전송 인터페이스 (6G, 12G)',
                 details: {
@@ -336,6 +336,24 @@
                     ]
                 }
             }
+        ];
+
+        // --- Product Menu (Top Tree) ---
+        // NOTE: 케이블은 기존 productData(제품 상세 페이지 연결) 유지
+        // 산업용 마킹기 / 자동화 주변기기는 현재 메뉴 트리만 구성 (상세 페이지는 추후 추가)
+        const markingMenu = [
+            { id: 'cij', name: '잉크젯마킹기(CIJ)' },
+            { id: 'laser', name: '레이저마킹기(Laser)' },
+            { id: 'tto', name: '열전사프린터(TTO)' },
+            { id: 'tij', name: '고해상도 잉크젯마킹기(TIJ)' },
+            { id: 'lcm', name: '대문자마킹기(LCM)' },
+        ];
+
+        const automationMenu = [
+            { id: 'etio', name: 'ETIO' },
+            { id: 'etl', name: 'ETL' },
+            { id: 'signal-scope', name: 'SIGNAL SCOPE' },
+            { id: 'tagger', name: 'TAGGER' },
         ];
 
         // --- Main App Component ---
@@ -741,7 +759,7 @@
                                     <div className="p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-blue-800">
                                         <Phone className="mb-3 opacity-80" size={32} />
                                         <div className="text-sm opacity-70 mb-1">전화 문의</div>
-                                        <div className="font-bold">+82 070 4120 7771</div>
+                                        <div className="font-bold">010.9981.4073 or 010.7771.0710</div>
                                     </div>
                                     <div className="p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-blue-800">
                                         <Mail className="mb-3 opacity-80" size={32} />
@@ -751,7 +769,11 @@
                                     <div className="p-8 flex flex-col items-center justify-center text-center">
                                         <MapPin className="mb-3 opacity-80" size={32} />
                                         <div className="text-sm opacity-70 mb-1">방문 안내</div>
-                                        <div className="font-bold text-sm">경기도 부천시 평천로 850번길 19</div>
+                                        <div className="font-bold text-sm leading-relaxed">
+                                            본사 : 경기도 화성시 동탄구 동탄영천로 150 동탄실리콘앨리 C동(제조동) 301호<br />
+                                            R&amp;D : 경기도 화성시 동탄기흥로 570-6 골든아이타워 626호<br />
+                                            공장 : 경기도 부천시 평천로 850번길 19
+                                        </div>
                                     </div>
                                 </div>
 
@@ -844,18 +866,56 @@
                                         </button>
 
                                         {/* Dropdown Tree Menu (Header) */}
-                                        <div className="dropdown-menu absolute left-1/2 -translate-x-1/2 pt-2 w-64">
-                                            <div className="bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden py-2">
-                                                {productData.map(product => (
-                                                    <a 
-                                                        key={product.id}
-                                                        onClick={(e) => { e.preventDefault(); navigateTo('product', product); }}
-                                                        className="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer border-b border-gray-50 last:border-0 flex justify-between items-center group/item"
-                                                    >
-                                                        {product.name}
-                                                        <ChevronRight size={14} className="opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                                                    </a>
-                                                ))}
+                                        <div className="dropdown-menu absolute left-1/2 -translate-x-1/2 pt-2 w-[22rem]">
+                                            <div className="bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
+                                                {/* 케이블 */}
+                                                <div className="px-4 pt-4 pb-3 border-b border-gray-100">
+                                                    <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">케이블</div>
+                                                    <div className="space-y-1">
+                                                        {productData.map(product => (
+                                                            <a
+                                                                key={product.id}
+                                                                onClick={(e) => { e.preventDefault(); navigateTo('product', product); }}
+                                                                className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer flex justify-between items-center group/item"
+                                                            >
+                                                                {product.name}
+                                                                <ChevronRight size={14} className="opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                {/* 산업용 마킹기 */}
+                                                <div className="px-4 pt-4 pb-3 border-b border-gray-100">
+                                                    <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">산업용 마킹기</div>
+                                                    <div className="space-y-1">
+                                                        {markingMenu.map(item => (
+                                                            <a
+                                                                key={item.id}
+                                                                onClick={(e) => { e.preventDefault(); }}
+                                                                className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-slate-50 hover:text-slate-900 cursor-default"
+                                                            >
+                                                                {item.name}
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                {/* 자동화 주변기기 */}
+                                                <div className="px-4 pt-4 pb-4">
+                                                    <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">자동화 주변기기</div>
+                                                    <div className="grid grid-cols-2 gap-1">
+                                                        {automationMenu.map(item => (
+                                                            <a
+                                                                key={item.id}
+                                                                onClick={(e) => { e.preventDefault(); }}
+                                                                className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-slate-50 hover:text-slate-900 cursor-default"
+                                                            >
+                                                                {item.name}
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -884,17 +944,51 @@
                                 <div className="flex flex-col p-4 space-y-4">
                                     <button onClick={() => navigateTo('home')} className="text-left font-medium text-gray-700">홈</button>
                                     <button onClick={() => navigateTo('company')} className="text-left font-medium text-gray-700">회사소개</button>
-                                    <div className="pl-4 border-l-2 border-gray-100 space-y-2">
-                                        <div className="text-xs font-bold text-gray-400 uppercase mb-2">제품 바로가기</div>
-                                        {productData.map(product => (
-                                            <button 
-                                                key={product.id}
-                                                onClick={() => navigateTo('product', product)}
-                                                className="block text-sm text-gray-600 py-1"
-                                            >
-                                                {product.name}
-                                            </button>
-                                        ))}
+                                    <div className="pl-4 border-l-2 border-gray-100 space-y-4">
+                                        <div>
+                                            <div className="text-xs font-bold text-gray-400 uppercase mb-2">케이블</div>
+                                            <div className="space-y-2">
+                                                {productData.map(product => (
+                                                    <button 
+                                                        key={product.id}
+                                                        onClick={() => navigateTo('product', product)}
+                                                        className="block text-sm text-gray-600 py-1"
+                                                    >
+                                                        {product.name}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div className="text-xs font-bold text-gray-400 uppercase mb-2">산업용 마킹기</div>
+                                            <div className="space-y-2">
+                                                {markingMenu.map(item => (
+                                                    <button
+                                                        key={item.id}
+                                                        onClick={() => alert('준비중입니다.')} 
+                                                        className="block text-sm text-gray-600 py-1"
+                                                    >
+                                                        {item.name}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div className="text-xs font-bold text-gray-400 uppercase mb-2">자동화 주변기기</div>
+                                            <div className="space-y-2">
+                                                {automationMenu.map(item => (
+                                                    <button
+                                                        key={item.id}
+                                                        onClick={() => alert('준비중입니다.')} 
+                                                        className="block text-sm text-gray-600 py-1"
+                                                    >
+                                                        {item.name}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
                                     <button onClick={() => navigateTo('contact')} className="text-left font-medium text-blue-600">커스텀제작 문의</button>
                                 </div>
@@ -943,11 +1037,15 @@
                                     <ul className="space-y-3 text-gray-400">
                                         <li className="flex items-start gap-3">
                                             <MapPin size={18} className="mt-1 flex-shrink-0" />
-                                            <span>경기도 부천시 평천로 850번길 19</span>
+                                            <span className="leading-relaxed">
+                                                본사 : 경기도 화성시 동탄구 동탄영천로 150 동탄실리콘앨리 C동(제조동) 301호<br />
+                                                R&amp;D : 경기도 화성시 동탄기흥로 570-6 골든아이타워 626호<br />
+                                                공장 : 경기도 부천시 평천로 850번길 19
+                                            </span>
                                         </li>
                                         <li className="flex items-center gap-3">
                                             <Phone size={18} className="flex-shrink-0" />
-                                            <span>070-4120-7771</span>
+                                            <span>010.9981.4073 or 010.7771.0710</span>
                                         </li>
                                         <li className="flex items-center gap-3">
                                             <Mail size={18} className="flex-shrink-0" />
