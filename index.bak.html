@@ -337,16 +337,68 @@
                 }
             },
 
-];
-        // Company page shows cables + automation peripherals as handled items
-        const companyProductData = [
-          ...productData.map(p => ({ id: p.id, name: p.name })),
-          { id: "etio", name: "ETIO" },
-          { id: "etl", name: "ETL" },
-          { id: "signal-scope", name: "SIGNAL SCOPE" },
-          { id: "tagger", name: "TAGGER" },
-        ];
+            {
+                id: 'etio',
+                name: 'ETIO',
+                image: './ara_site_assets/etio.jpg?v=20260223',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=ETIO',
+                desc: '현장 I/O 인터페이스 및 테스트 환경 구축을 위한 솔루션',
+                details: {
+                    featureImage: './ara_site_assets/etio.jpg?v=20260223',
+                    bullets: [
+                        '현장 적용 중심의 인터페이스/구성 지원',
+                        '케이블/장비 연동 및 구성 컨설팅',
+                        '세팅 및 트러블슈팅 기술지원'
+                    ]
+                }
+            },
+            {
+                id: 'etl',
+                name: 'ETL',
+                image: './ara_site_assets/etl.jpg?v=20260223',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=ETL',
+                desc: '검증/테스트 프로세스 최적화를 위한 장비 및 솔루션',
+                details: {
+                    featureImage: './ara_site_assets/etl.jpg?v=20260223',
+                    bullets: [
+                        '현장 요구사항 기반 솔루션 제안',
+                        '시스템 구성 및 도입 지원',
+                        '유지보수/기술지원'
+                    ]
+                }
+            },
+            {
+                id: 'signal-scope',
+                name: 'SIGNAL SCOPE',
+                image: './ara_site_assets/signal_scope.jpg?v=20260223',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=SIGNAL+SCOPE',
+                desc: '신호 품질 분석 및 검증을 위한 측정/분석 솔루션',
+                details: {
+                    featureImage: './ara_site_assets/signal_scope.jpg?v=20260223',
+                    bullets: [
+                        '신호 분석/디버깅 지원',
+                        '적용 환경에 맞는 구성 제안',
+                        '현장 세팅 및 기술지원'
+                    ]
+                }
+            },
+            {
+                id: 'tagger',
+                name: 'TAGGER',
+                image: './ara_site_assets/tagger.jpg?v=20260223',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=TAGGER',
+                desc: '추적/태깅 기반의 데이터 연계 및 관리 솔루션',
+                details: {
+                    featureImage: './ara_site_assets/tagger.jpg?v=20260223',
+                    bullets: [
+                        '운영 환경에 맞는 적용 컨설팅',
+                        '시스템 연동 및 초기 세팅 지원',
+                        '기술지원 및 유지관리'
+                    ]
+                }
+            }
 
+];
 
         // --- Product Menu (Top Tree) ---
         // NOTE: 케이블은 기존 productData(제품 상세 페이지 연결) 유지
@@ -517,24 +569,24 @@
                             <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
                                 <div>
                                     <img 
-                                        src="ara_site_assets/1313.jpg?v=20260225" 
+                                        src="ara_site_assets/1313.jpg?v=20260223" 
                                         alt="Factory" 
                                         className="rounded-lg shadow-xl"
                                     />
                                 </div>
                                 <div className="space-y-6 text-gray-700 leading-relaxed">
-                                    <h3 className="text-2xl font-bold text-blue-900">Industrial Connectivity & Automation Solutions Partner</h3>
+                                    <h3 className="text-2xl font-bold text-blue-900">Professional Cable Supplier</h3>
                                     <p>ARA Electronic Technology Co., Ltd.는 2015년 한국에 설립되어 산업용 케이블의 개발·제조를 전문으로 해왔습니다.</p>
                                     <p>ARA의 주요 제품으로는 산업용 로봇 케이블, 산업용 카메라 케이블, 서보 모터 케이블, 산업 현장용 통신 및 제어 케이블이 있으며, 산업 자동화, 기계 장비, 로봇, 서보 시스템, CNC, 통신 서비스 등 다양한 분야에 널리 사용되고 있습니다.</p>
                                     <p>또한 ETIO, ETL, SIGNAL SCOPE, TAGGER 등 현장 적용에 필요한 장비/솔루션도 함께 공급하며, 도입 컨설팅부터 설치·세팅, 트러블슈팅까지 기술지원 및 맞춤형 솔루션 제공이 가능합니다.</p>
-                                    <p>고객의 제품이 최고의 성능을 발휘할 수 있도록, 더 신뢰할 수 있는 연결 솔루션과 빠른 현장 대응으로 지속적으로 지원하겠습니다.</p>
+                                    <p>우리는 고객의 제품이 최고의 성능을 발휘할 수 있도록, 더 신뢰할 수 있는 연결 솔루션과 빠른 현장 대응으로 지속적으로 지원하겠습니다.</p>
                                 </div>
                             </div>
 
                             <div className="bg-gray-50 p-8 rounded-xl border border-gray-200">
                                 <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">주요 취급 품목</h3>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                    {companyProductData.map(product => (
+                                    {productData.map(product => (
                                         <div key={product.id} className="flex items-center gap-2 p-3 bg-white rounded shadow-sm">
                                             <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                                             <span className="text-sm font-medium text-gray-700">{product.name}</span>
@@ -554,7 +606,7 @@
                     {/* MOBILE STICKY MENU: Always Visible on small screens */}
                     <div className="lg:hidden sticky top-[60px] z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200 overflow-x-auto no-scrollbar whitespace-nowrap py-3 px-4 shadow-md transition-all">
                         <div className="flex space-x-2">
-                        {companyProductData.map(product => {
+                        {productData.map(product => {
                             const isActive = selectedProduct.id === product.id;
                             return (
                                 <button
@@ -1044,7 +1096,7 @@
                                             <MapPin size={18} className="mt-1 flex-shrink-0" />
                                             <span className="leading-relaxed">
                                                 본사 : 경기도 화성시 동탄구 동탄영천로 150 동탄실리콘앨리 C동(제조동) 301호<br />
-                                                R&amp;D : 경기도 화성시 동탄구 동탄기흥로 570-6 골든아이타워 626호<br />
+                                                R&amp;D : 경기도 화성시 동탄기흥로 570-6 골든아이타워 626호<br />
                                                 공장 : 경기도 부천시 평천로 850번길 19
                                             </span>
                                         </li>
