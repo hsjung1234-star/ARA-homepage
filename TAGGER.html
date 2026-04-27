@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tagger — ARA Electronics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0c0f;
+    --dark: #111418;
+    --panel: #161b22;
+    --border: #21262d;
+    --accent: #00ff88;
+    --accent2: #00e5ff;
+    --accent3: #ffd166;
+    --accent4: #ff6b35;
+    --text: #f0f6fc;
+    --text-dim: #b0bac5;
+    --text-muted: #6e7a88;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+    line-height: 1.75;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── SCROLL PROGRESS ── */
+  .scroll-progress {
+    position: fixed;
+    top: 60px; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    z-index: 999;
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(10,12,15,0.92);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+
+  .nav-logo-product {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    line-height: 1;
+  }
+
+  .nav-logo-sub {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    border-left: 1px solid var(--border);
+    padding-left: 12px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    border-radius: 3px;
+    transition: color 0.2s, background 0.2s;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--accent);
+    background: rgba(0,255,136,0.06);
+    border: 1px solid rgba(0,255,136,0.18);
+  }
+
+  .nav-links a { border: 1px solid transparent; }
+
+  .nav-links .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    opacity: 0.6;
+    padding: 1px 5px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+    transition: background 0.2s, color 0.2s, opacity 0.2s;
+  }
+
+  .nav-links a.active .num {
+    color: #000;
+    background: var(--accent);
+    opacity: 1;
+    font-weight: 700;
+  }
+
+  .nav-cta {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--black) !important;
+    background: var(--accent) !important;
+    padding: 7px 16px !important;
+    border-radius: 2px !important;
+    transition: opacity 0.2s !important;
+  }
+
+  .nav-cta:hover { opacity: 0.85 !important; }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 100px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .sec-wrap { background: var(--black); border-top: 1px solid var(--border); }
+  .sec-wrap.alt { background: var(--dark); }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 60px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    background: rgba(0,255,136,0.06);
+    border: 1px solid rgba(0,255,136,0.2);
+    border-top: 2px solid var(--accent);
+    padding: 6px 12px;
+    margin-top: 4px;
+    white-space: nowrap;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+  }
+
+  .section-title em { color: var(--accent); font-style: normal; }
+
+  .section-desc {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 8px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── HERO ── */
+  #sec-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--black);
+  }
+
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: -150px; right: -100px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,255,136,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-glow2 {
+    position: absolute;
+    bottom: -50px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,229,255,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 140px 80px 100px;
+    max-width: 1260px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .hero-brand {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .hero-divider-line { width: 40px; height: 1px; background: var(--border); }
+
+  .hero-series {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 10vw, 130px);
+    color: var(--white);
+    letter-spacing: 0.04em;
+    line-height: 0.95;
+    margin-bottom: 10px;
+  }
+
+  .hero-title span { color: var(--accent); }
+
+  .hero-subtitle {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    margin-bottom: 36px;
+    text-transform: uppercase;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+
+  .hero-tagline {
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--text-dim);
+    max-width: 640px;
+    line-height: 1.8;
+    margin-bottom: 50px;
+  }
+
+  .hero-tagline strong { color: var(--white); font-weight: 600; }
+
+  .hero-kpi-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 50px;
+    border: 1px solid var(--border);
+    width: fit-content;
+  }
+
+  .hero-kpi {
+    padding: 20px 36px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .hero-kpi:last-child { border-right: none; }
+
+  .hero-kpi-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .hero-kpi-val.c1 { color: var(--accent); }
+  .hero-kpi-val.c2 { color: var(--accent2); }
+  .hero-kpi-val.c3 { color: var(--accent3); }
+  .hero-kpi-val.c4 { color: var(--accent4); }
+
+  .hero-kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hero-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .hero-scroll-indicator {
+    position: absolute;
+    bottom: 40px; left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .hero-scroll-indicator span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+  }
+
+  .scroll-arrow {
+    width: 20px; height: 20px;
+    border-right: 1.5px solid var(--text-muted);
+    border-bottom: 1.5px solid var(--text-muted);
+    transform: rotate(45deg);
+    margin-top: -4px;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* ── CONCEPT SECTION ── */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .concept-quote-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+
+  .concept-quote {
+    font-size: 15px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    font-style: italic;
+    position: relative;
+  }
+
+  .concept-quote::before {
+    content: '"';
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    color: var(--accent);
+    opacity: 0.2;
+    position: absolute;
+    top: -16px; left: -8px;
+    line-height: 1;
+  }
+
+  .concept-features {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .cf-card {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .cf-card:hover { border-left-color: var(--accent); background: rgba(0,255,136,0.02); }
+  .cf-card.c2:hover { border-left-color: var(--accent2); }
+  .cf-card.c3:hover { border-left-color: var(--accent3); }
+
+  .cf-icon {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(0,255,136,0.25);
+    background: rgba(0,255,136,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .cf-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 5px;
+  }
+
+  .cf-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  /* ── METADATA SECTION ── */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .meta-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .meta-card:hover {
+    border-color: rgba(0,255,136,0.3);
+    transform: translateY(-3px);
+  }
+
+  .meta-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .meta-card:hover::after { opacity: 1; }
+
+  .meta-pixel-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(0,255,136,0.08);
+    border: 1px solid rgba(0,255,136,0.2);
+    padding: 3px 8px;
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+  }
+
+  .meta-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .meta-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    margin-top: 10px;
+  }
+
+  /* ── PIXEL DATA DIAGRAM ── */
+  .pixel-diagram {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin-bottom: 40px;
+  }
+
+  .pixel-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+
+  .pixel-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    width: 90px;
+    flex-shrink: 0;
+    letter-spacing: 0.1em;
+  }
+
+  .pixel-cell {
+    width: 48px; height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .pixel-cell.normal { background: rgba(255,255,255,0.04); color: var(--text-muted); }
+  .pixel-cell.enc { background: rgba(0,255,136,0.12); color: var(--accent); border-color: rgba(0,255,136,0.3); }
+  .pixel-cell.io { background: rgba(0,229,255,0.12); color: var(--accent2); border-color: rgba(0,229,255,0.3); }
+  .pixel-cell.err { background: rgba(255,107,53,0.12); color: var(--accent4); border-color: rgba(255,107,53,0.3); }
+
+  .pixel-note {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── PROBLEM SECTION ── */
+  .problem-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .prob-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent4);
+    padding: 24px 28px;
+  }
+
+  .prob-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent4);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .prob-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .prob-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  /* ── INTEGRATION SECTION ── */
+  .integration-chain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+  }
+
+  .chain-node {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 18px 24px;
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .chain-node.highlight {
+    background: rgba(0,255,136,0.06);
+    border-color: var(--accent);
+    box-shadow: 0 0 30px rgba(0,255,136,0.08);
+  }
+
+  .chain-node-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .chain-node.highlight .chain-node-name { color: var(--accent); }
+  .chain-node-name.blue { color: var(--accent2); }
+  .chain-node-name.yellow { color: var(--accent3); }
+  .chain-node-name.orange { color: var(--accent4); }
+
+  .chain-node-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+  }
+
+  .chain-arrow {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .integration-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .integ-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px;
+    transition: border-color 0.3s;
+  }
+
+  .integ-card:hover { border-color: rgba(0,255,136,0.3); }
+
+  .integ-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 14px;
+    width: 40px; height: 40px;
+    border: 1.5px solid rgba(0,255,136,0.3);
+    background: rgba(0,255,136,0.06);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .integ-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .integ-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  /* ── USECASE SECTION ── */
+  .usecase-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .usecase-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .usecase-card:hover {
+    border-color: rgba(0,255,136,0.3);
+    transform: translateY(-3px);
+  }
+
+  .usecase-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .usecase-card:hover::after { opacity: 1; }
+
+  .usecase-icon {
+    width: 40px; height: 40px;
+    background: rgba(0,255,136,0.06);
+    border: 1px solid rgba(0,255,136,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+
+  .usecase-industry {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .usecase-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .usecase-point {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    padding-left: 12px;
+    border-left: 2px solid rgba(0,255,136,0.2);
+  }
+
+  /* ── EFFECTS ── */
+  .effects-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-bottom: 40px;
+  }
+
+  .effect-card {
+    background: var(--panel);
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .effect-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .effect-card:nth-child(1)::before { background: var(--accent); }
+  .effect-card:nth-child(2)::before { background: var(--accent2); }
+  .effect-card:nth-child(3)::before { background: var(--accent3); }
+  .effect-card:nth-child(4)::before { background: var(--accent4); }
+
+  .effect-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 54px;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .effect-card:nth-child(1) .effect-val { color: var(--accent); }
+  .effect-card:nth-child(2) .effect-val { color: var(--accent2); }
+  .effect-card:nth-child(3) .effect-val { color: var(--accent3); }
+  .effect-card:nth-child(4) .effect-val { color: var(--accent4); }
+
+  .effect-title { font-size: 13px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+  .effect-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+  .effects-notice {
+    background: rgba(0,255,136,0.04);
+    border: 1px solid rgba(0,255,136,0.15);
+    border-left: 3px solid var(--accent);
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .effects-notice p { font-size: 14px; color: var(--text-dim); }
+  .effects-notice strong { color: var(--white); font-weight: 700; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 50px 80px;
+    background: var(--dark);
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .footer-brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .footer-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    max-width: 320px;
+    line-height: 1.7;
+  }
+
+  .footer-copy {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    opacity: 0.5;
+  }
+
+  /* ── TAG VIZ ── */
+  .tag-viz {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin-bottom: 40px;
+  }
+
+  /* ── NEXT SECTION LINK ── */
+  .next-sec {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    transition: color 0.2s;
+    letter-spacing: 0.08em;
+  }
+  .next-sec:hover { color: var(--accent); }
+  .next-sec::after { content: '↓'; font-size: 14px; }
+
+  /* ── ARA 인디고블루 브랜드 그라데이션 ── */
+  :root {
+    --ara-grad: linear-gradient(160deg, #6e7fab 0%, #4f5c8d 30%, #383f72 60%, #16152f 100%);
+  }
+  .ara-grad-text {
+    background: var(--ara-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-text-stroke: 1.2px rgba(255,255,255,0.55);
+    paint-order: stroke fill;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.55));
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollBar"></div>
+
+<!-- ══════════════════════════════════════
+     NAVIGATION
+══════════════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#sec-hero" class="nav-logo">
+      <span class="nav-logo-product">TAGGER</span>
+      <span class="nav-logo-sub">AI 메타데이터 플랫폼 · ARA Electronics</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#sec-concept"><span class="num">01</span> 개념 & 정의</a></li>
+      <li><a href="#sec-metadata"><span class="num">02</span> 메타데이터 삽입</a></li>
+      <li><a href="#sec-problem"><span class="num">03</span> 문제 해결</a></li>
+      <li><a href="#sec-integration"><span class="num">04</span> 통합 솔루션</a></li>
+      <li><a href="#sec-usecase"><span class="num">05</span> 적용 분야</a></li>
+      <li><a href="#sec-effects" class="nav-cta">도입 효과</a></li>
+    </ul>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);padding-left:16px;border-left:1px solid var(--border);letter-spacing:.1em;" id="nav-counter">00 / 06</span>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<div id="sec-hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="hero-brand">ARA Electronics · Signal Scope Series · 2026</span>
+      <span class="hero-divider-line"></span>
+      <span class="hero-series">AI 최적화 메타데이터 플랫폼</span>
+    </div>
+
+    <div class="hero-title"><span>Tagger</span></div>
+    <div class="hero-subtitle">태거 &nbsp;·&nbsp; AI Metadata Insertion Platform</div>
+
+    <p class="hero-tagline">
+      <strong>단순 이미지를 넘어 불량의 '이유'를 기록하는 AI 학습의 마스터키.</strong><br>
+      검사 이미지에 당시의 물리적 데이터(속도, 전류, 타이밍)를 결합합니다.<br>
+      AI가 불량의 '모양'뿐 아니라 <strong>'발생 상황'까지 학습</strong>하여 판정 정확도를 획기적으로 높입니다.
+    </p>
+
+    <div class="hero-kpi-row">
+      <div class="hero-kpi">
+        <div class="hero-kpi-val c1">6px</div>
+        <div class="hero-kpi-label">TAG 데이터 삽입 픽셀</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-val c2">32bit</div>
+        <div class="hero-kpi-label">엔코더 카운트 정밀도</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-val c3">4ch</div>
+        <div class="hero-kpi-label">카메라 채널 지원</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-val c4">All-in</div>
+        <div class="hero-kpi-label">ETIO+NSync+Scope 통합</div>
+      </div>
+    </div>
+
+    <div class="hero-badge-row">
+      <div class="hero-badge"><span class="dot"></span>원본 영상 무훼손</div>
+      <div class="hero-badge"><span class="dot"></span>엔코더 카운트 삽입</div>
+      <div class="hero-badge"><span class="dot"></span>IO Input 태깅</div>
+      <div class="hero-badge"><span class="dot"></span>Error 채널 기록</div>
+      <div class="hero-badge"><span class="dot"></span>AI 딥러닝 최적화</div>
+      <div class="hero-badge"><span class="dot"></span>리피터 지원</div>
+    </div>
+  </div>
+
+  <div class="hero-scroll-indicator">
+    <span>SCROLL</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     01 — CONCEPT & DEFINITION
+══════════════════════════════════════ -->
+<div class="sec-wrap alt" id="sec-concept">
+  <section>
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <div>
+        <h2 class="section-title">개념 &amp; <em>한 줄 정의</em></h2>
+        <p class="section-desc">불량의 '모양'만 학습하던 AI에서 — '발생 이유'까지 학습하는 AI로</p>
+      </div>
+    </div>
+
+    <div class="concept-grid">
+      <div>
+        <div class="concept-quote-box">
+          <p class="concept-quote" style="padding-left:20px;">
+            조명 전압 강하의 노이즈가 결합된 과검 이미지를 학습하고 있진 않나요?<br>
+            Tagger로 데이터를 정제하십시오.
+          </p>
+        </div>
+        <div class="concept-quote-box" style="border-left-color: var(--accent2); margin-bottom:0;">
+          <p class="concept-quote" style="padding-left:20px;">
+            속도 불안정인지, 조명 문제인지 —<br>
+            Tagger가 태깅하면 AI 모델링 시간이 단축됩니다.
+          </p>
+        </div>
+
+        <!-- Tagger Flow Diagram -->
+        <div style="margin-top:28px; background:var(--panel); border:1px solid var(--border); padding:24px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-muted); letter-spacing:0.15em; margin-bottom:20px;">// TAGGER FLOW — 메타데이터 삽입 원리</div>
+          <svg viewBox="0 0 500 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+            <!-- Camera Image -->
+            <rect x="10" y="50" width="90" height="80" fill="rgba(0,255,136,0.06)" stroke="rgba(0,255,136,0.25)" stroke-width="1.5" rx="2"/>
+            <text x="55" y="88" font-family="Bebas Neue" font-size="13" fill="#00ff88" text-anchor="middle" letter-spacing="1">CAMERA</text>
+            <text x="55" y="104" font-family="Noto Sans KR" font-size="10" fill="#6e7a88" text-anchor="middle">원본 이미지</text>
+
+            <!-- Physical data -->
+            <rect x="10" y="145" width="90" height="30" fill="rgba(0,229,255,0.05)" stroke="rgba(0,229,255,0.2)" stroke-width="1" rx="2"/>
+            <text x="55" y="165" font-family="JetBrains Mono" font-size="9" fill="#00e5ff" text-anchor="middle">물리 데이터</text>
+
+            <!-- Arrow -->
+            <line x1="100" y1="90" x2="180" y2="90" stroke="#6e7a88" stroke-width="1.5"/>
+            <polyline points="174,85 184,90 174,95" stroke="#6e7a88" stroke-width="1.5" fill="none"/>
+            <line x1="100" y1="160" x2="180" y2="120" stroke="#6e7a88" stroke-width="1.5"/>
+
+            <!-- TAGGER center -->
+            <rect x="182" y="40" width="100" height="100" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.4)" stroke-width="2" rx="2"/>
+            <text x="232" y="85" font-family="Bebas Neue" font-size="22" fill="#00ff88" text-anchor="middle" letter-spacing="2">TAGGER</text>
+            <text x="232" y="104" font-family="JetBrains Mono" font-size="9" fill="#6e7a88" text-anchor="middle">6 PIXEL TAG</text>
+            <text x="232" y="119" font-family="JetBrains Mono" font-size="9" fill="#6e7a88" text-anchor="middle">INSERTION</text>
+
+            <!-- Arrow out -->
+            <line x1="282" y1="90" x2="360" y2="90" stroke="#6e7a88" stroke-width="1.5"/>
+            <polyline points="354,85 364,90 354,95" stroke="#6e7a88" stroke-width="1.5" fill="none"/>
+
+            <!-- Tagged output -->
+            <rect x="365" y="40" width="120" height="100" fill="rgba(0,255,136,0.04)" stroke="rgba(0,255,136,0.2)" stroke-width="1.5" rx="2"/>
+            <text x="425" y="78" font-family="Bebas Neue" font-size="13" fill="#f0f6fc" text-anchor="middle" letter-spacing="1">TAGGED</text>
+            <text x="425" y="94" font-family="Noto Sans KR" font-size="10" fill="#6e7a88" text-anchor="middle">원본+메타데이터</text>
+
+            <!-- 6 pixel cells -->
+            <rect x="370" y="108" width="14" height="10" fill="rgba(0,255,136,0.3)" rx="1"/>
+            <rect x="387" y="108" width="14" height="10" fill="rgba(0,255,136,0.3)" rx="1"/>
+            <rect x="404" y="108" width="14" height="10" fill="rgba(0,255,136,0.3)" rx="1"/>
+            <rect x="421" y="108" width="14" height="10" fill="rgba(0,255,136,0.3)" rx="1"/>
+            <rect x="438" y="108" width="14" height="10" fill="rgba(0,229,255,0.3)" rx="1"/>
+            <rect x="455" y="108" width="14" height="10" fill="rgba(255,107,53,0.3)" rx="1"/>
+            <text x="425" y="132" font-family="JetBrains Mono" font-size="8" fill="#6e7a88" text-anchor="middle">+6px TAG DATA</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="concept-features">
+        <div class="cf-card">
+          <div class="cf-icon">KEY</div>
+          <div>
+            <div class="cf-title">한 줄 정의</div>
+            <div class="cf-desc">검사 이미지에 당시의 물리적 데이터(속도, 전류, 타이밍)를 결합하는 메타데이터 삽입 장치입니다. 원본 영상을 훼손하지 않고 추가적인 6 Pixel을 생성하여 삽입합니다.</div>
+          </div>
+        </div>
+        <div class="cf-card c2">
+          <div class="cf-icon">AI</div>
+          <div>
+            <div class="cf-title">원인(Why) 학습</div>
+            <div class="cf-desc">AI가 불량의 '모양'뿐만 아니라 '발생 상황'까지 학습하여 판정 정확도를 획기적으로 높입니다. 재학습 횟수가 대폭 줄어듭니다.</div>
+          </div>
+        </div>
+        <div class="cf-card c3">
+          <div class="cf-icon">SYS</div>
+          <div>
+            <div class="cf-title">통합 완성</div>
+            <div class="cf-desc">ETIO + NSync + Signal Scope의 모든 기능을 포함하며 리피터까지 지원하는 끝판왕 솔루션입니다. 단일 장비로 전체 신호 생태계를 완성합니다.</div>
+          </div>
+        </div>
+        <div class="cf-card">
+          <div class="cf-icon">RAW</div>
+          <div>
+            <div class="cf-title">원본 무훼손</div>
+            <div class="cf-desc">Tag 데이터를 영상에 삽입하는 방법은 원본 영상을 훼손하지 않고, 추가적인 6 Pixel을 생성하여 삽입합니다. 기존 검사 소프트웨어와 완전 호환됩니다.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <a href="#sec-metadata" class="next-sec">다음 — 메타데이터 삽입 구조</a>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     02 — METADATA INSERTION
+══════════════════════════════════════ -->
+<div class="sec-wrap" id="sec-metadata">
+  <section>
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <div>
+        <h2 class="section-title">메타데이터 <em>삽입 구조</em></h2>
+        <p class="section-desc">6 Pixel TAG — 이미지 한 줄마다 갱신되는 물리 데이터 스냅샷</p>
+      </div>
+    </div>
+
+    <!-- Pixel Structure Diagram -->
+    <div class="tag-viz">
+      <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-muted); letter-spacing:0.15em; margin-bottom:20px;">// 6-PIXEL TAG DATA STRUCTURE — Line 마다 갱신</div>
+
+      <div class="pixel-row">
+        <span class="pixel-label">1st Pixel</span>
+        <div class="pixel-cell enc">ENC<br>[7:0]</div>
+        <span class="pixel-note">← 엔코더 카운트 값의 하위 8비트</span>
+      </div>
+      <div class="pixel-row">
+        <span class="pixel-label">2nd Pixel</span>
+        <div class="pixel-cell enc">ENC<br>[15:8]</div>
+        <span class="pixel-note">← 엔코더 카운트 값의 두 번째 바이트</span>
+      </div>
+      <div class="pixel-row">
+        <span class="pixel-label">3rd Pixel</span>
+        <div class="pixel-cell enc">ENC<br>[23:16]</div>
+        <span class="pixel-note">← 엔코더 카운트 값의 세 번째 바이트</span>
+      </div>
+      <div class="pixel-row">
+        <span class="pixel-label">4th Pixel</span>
+        <div class="pixel-cell enc">ENC<br>[31:24]</div>
+        <span class="pixel-note">← 엔코더 카운트 값의 상위 8비트 (총 32bit)</span>
+      </div>
+      <div class="pixel-row">
+        <span class="pixel-label">5th Pixel</span>
+        <div class="pixel-cell io">IO<br>Input</div>
+        <span class="pixel-note">← IO Input 상태 (센서, PLC 신호)</span>
+      </div>
+      <div class="pixel-row">
+        <span class="pixel-label">6th Pixel</span>
+        <div class="pixel-cell err">ERR<br>+CH#</div>
+        <span class="pixel-note">← Error 상태 + 카메라 채널 번호 [2:0] / Hsync 카운트 [7:3]</span>
+      </div>
+
+      <div style="margin-top:20px; padding:14px 16px; background:rgba(0,0,0,0.3); border:1px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-muted); line-height:1.8;">
+        <span style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:10px; background:rgba(0,255,136,0.1); border:1px solid rgba(0,255,136,0.25); padding:2px 6px; letter-spacing:.08em;">OK</span> 원본 영상 무훼손 &nbsp;|&nbsp;
+        <span style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:10px; background:rgba(0,255,136,0.1); border:1px solid rgba(0,255,136,0.25); padding:2px 6px; letter-spacing:.08em;">OK</span> Line 마다 실시간 갱신 &nbsp;|&nbsp;
+        <span style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:10px; background:rgba(0,255,136,0.1); border:1px solid rgba(0,255,136,0.25); padding:2px 6px; letter-spacing:.08em;">OK</span> Frame Grabber 완벽 호환 &nbsp;|&nbsp;
+        <span style="color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:10px; background:rgba(0,255,136,0.1); border:1px solid rgba(0,255,136,0.25); padding:2px 6px; letter-spacing:.08em;">OK</span> 4채널 카메라 동시 지원
+      </div>
+    </div>
+
+    <!-- 3 meta data cards -->
+    <div class="meta-grid">
+      <div class="meta-card">
+        <div class="meta-pixel-badge">PIXEL 1~4 · ENCODER</div>
+        <div class="meta-title">엔코더 카운트 값 (32bit)</div>
+        <p style="font-size:13px; color:var(--text-dim); line-height:1.7;">촬영된 이미지의 정확한 위치 정보를 32bit 전체 카운트로 기록합니다. 어떤 속도 변화에서도 위치 오차 없이 추적합니다.</p>
+        <div class="meta-desc">
+          1st: count[7:0]<br>
+          2nd: count[15:8]<br>
+          3rd: count[23:16]<br>
+          4th: count[31:24]
+        </div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-pixel-badge">PIXEL 5 · IO INPUT</div>
+        <div class="meta-title">IO Input 상태 태깅</div>
+        <p style="font-size:13px; color:var(--text-dim); line-height:1.7;">센서, PLC 신호 등 IO Input의 상태를 이미지에 직접 기록합니다. 어떤 외부 신호가 들어왔을 때 촬영이 이루어졌는지 완벽히 추적합니다.</p>
+        <div class="meta-desc">
+          5th: IO input state<br>
+          → 센서 ON/OFF 기록<br>
+          → PLC 신호 상태 포함
+        </div>
+      </div>
+      <div class="meta-card">
+        <div class="meta-pixel-badge">PIXEL 6 · ERROR + CH</div>
+        <div class="meta-title">에러 상태 & 채널 번호</div>
+        <p style="font-size:13px; color:var(--text-dim); line-height:1.7;">에러 발생 여부와 현재 카메라 채널 번호를 기록합니다. Frame Grabber에서 출력되는 트리거 대비 누락된 Hsync를 카운트하여 검사 누락 이력을 보존합니다.</p>
+        <div class="meta-desc">
+          6th: Error[7:3]<br>
+          → CH# [2:0]<br>
+          → Hsync 누락 카운트
+        </div>
+      </div>
+    </div>
+    <a href="#sec-problem" class="next-sec">다음 — 문제 해결</a>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     03 — PROBLEM SOLVED
+══════════════════════════════════════ -->
+<div class="sec-wrap alt" id="sec-problem">
+  <section>
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <div>
+        <h2 class="section-title">Tagger가 <em>해결하는 문제</em></h2>
+        <p class="section-desc">AI 학습 데이터 오염부터 트러블슈팅까지 — 근본 원인을 데이터로 증명</p>
+      </div>
+    </div>
+
+    <div class="problem-2col">
+      <div class="prob-card">
+        <div class="prob-tag">문제 01 — AI 학습 데이터 오염</div>
+        <div class="prob-title">조명 전압 강하로 어둡게 찍힌 이미지를 불량으로 학습</div>
+        <div class="prob-desc">어두운 이미지가 불량 데이터로 학습되면 AI 모델의 정확도가 계속 떨어집니다. 수천 장을 재학습해도 근본 원인 해결 없이 반복됩니다. Tagger는 해당 이미지의 조명 전류 상태를 태그로 기록하여 오염 데이터를 자동으로 분류할 수 있게 합니다.</div>
+      </div>
+
+      <div class="prob-card">
+        <div class="prob-tag">문제 02 — 원인 불명 촬영 누락</div>
+        <div class="prob-title">촬영이 안 될 때 배선인지 노이즈인지 설정인지 모름</div>
+        <div class="prob-desc">6th Pixel의 Error 태그가 누락 발생 시점을 정확히 기록합니다. 어느 채널에서 어떤 조건으로 누락이 발생했는지 이미지 자체가 증거가 됩니다. 일주일씩 걸리던 트러블슈팅이 수 시간으로 단축됩니다.</div>
+      </div>
+
+      <div class="prob-card">
+        <div class="prob-tag">문제 03 — 위치 정보 손실</div>
+        <div class="prob-title">불량이 라인 어디에서 발생했는지 추적 불가</div>
+        <div class="prob-desc">1~4th Pixel의 32bit 엔코더 카운트로 해당 이미지가 라인의 정확히 어느 위치에서 촬영되었는지 기록됩니다. 불량 발생 위치 패턴 분석으로 기계적 이상을 조기에 발견합니다.</div>
+      </div>
+
+      <div class="prob-card">
+        <div class="prob-tag">문제 04 — AI 모델 과검 남발</div>
+        <div class="prob-title">딥러닝 지도학습 시 불필요한 과검 이미지 제거 불가</div>
+        <div class="prob-desc">조명 불량, 속도 이상, 센서 오작동 상태에서 찍힌 이미지는 모두 태그 정보로 분류 가능합니다. 오염된 이미지를 걸러내고 깨끗한 데이터만 학습시켜 AI 모델의 과검률을 구조적으로 낮춥니다.</div>
+      </div>
+    </div>
+
+    <!-- Before / After comparison -->
+    <div style="margin-top:40px; display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+      <div style="background:var(--panel); border:1px solid var(--border); border-top:3px solid var(--accent4); padding:28px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; color:var(--accent4); letter-spacing:0.15em; margin-bottom:16px; text-transform:uppercase;">// Before — Tagger 도입 전</div>
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px;">
+          <li style="font-size:13px; color:var(--text-dim); padding-left:16px; border-left:2px solid rgba(255,107,53,0.3);">어두운 이미지 → 불량 데이터로 학습 → AI 오판 반복</li>
+          <li style="font-size:13px; color:var(--text-dim); padding-left:16px; border-left:2px solid rgba(255,107,53,0.3);">촬영 누락 발생 → 원인 불명 → 전체 장비 점검</li>
+          <li style="font-size:13px; color:var(--text-dim); padding-left:16px; border-left:2px solid rgba(255,107,53,0.3);">재학습 수천 장 → 정확도 소폭 개선 → 또 재학습</li>
+          <li style="font-size:13px; color:var(--text-dim); padding-left:16px; border-left:2px solid rgba(255,107,53,0.3);">불량 위치 패턴 분석 불가 → 기계 문제 조기 발견 불가</li>
+        </ul>
+      </div>
+      <div style="background:rgba(0,255,136,0.03); border:1px solid rgba(0,255,136,0.2); border-top:3px solid var(--accent); padding:28px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; color:var(--accent); letter-spacing:0.15em; margin-bottom:16px; text-transform:uppercase;">// After — Tagger 도입 후</div>
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px;">
+          <li style="font-size:13px; color:var(--text-dim); padding-left:16px; border-left:2px solid rgba(0,255,136,0.4);">조명 상태 태그 → 오염 이미지 자동 분류 → 깨끗한 학습</li>
+          <li style="font-size:13px; color:var(--text-dim); padding-left:16px; border-left:2px solid rgba(0,255,136,0.4);">Error 태그 → 누락 시점·채널 즉시 특정 → 4시간 내 해결</li>
+          <li style="font-size:13px; color:var(--text-dim); padding-left:16px; border-left:2px solid rgba(0,255,136,0.4);">정제된 데이터 학습 → AI 정확도 급상승 → 재학습 최소화</li>
+          <li style="font-size:13px; color:var(--text-dim); padding-left:16px; border-left:2px solid rgba(0,255,136,0.4);">32bit 위치 태그 → 불량 위치 패턴 분석 → 예지보전 가능</li>
+        </ul>
+      </div>
+    </div>
+    <a href="#sec-integration" class="next-sec">다음 — 통합 솔루션</a>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     04 — INTEGRATION
+══════════════════════════════════════ -->
+<div class="sec-wrap" id="sec-integration">
+  <section>
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <div>
+        <h2 class="section-title">통합 <em>솔루션</em></h2>
+        <p class="section-desc">ETIO + NSync + Signal Scope의 모든 기능을 하나로 — 끝판왕 컨트롤 타워</p>
+      </div>
+    </div>
+
+    <!-- Integration chain -->
+    <div class="integration-chain">
+      <div class="chain-node">
+        <div class="chain-node-name blue">ETIO</div>
+        <div class="chain-node-sub">트리거 마스터</div>
+      </div>
+      <div class="chain-arrow">+</div>
+      <div class="chain-node">
+        <div class="chain-node-name yellow">NSync</div>
+        <div class="chain-node-sub">조명 Closed-Loop</div>
+      </div>
+      <div class="chain-arrow">+</div>
+      <div class="chain-node">
+        <div class="chain-node-name" style="color:var(--accent2);">Signal</div>
+        <div class="chain-node-sub">실시간 신호 기록</div>
+      </div>
+      <div class="chain-arrow">+</div>
+      <div class="chain-node">
+        <div class="chain-node-name" style="color:var(--accent4);">Repeater</div>
+        <div class="chain-node-sub">신호 확장 지원</div>
+      </div>
+      <div class="chain-arrow">=</div>
+      <div class="chain-node highlight">
+        <div class="chain-node-name">TAGGER</div>
+        <div class="chain-node-sub">끝판왕 솔루션</div>
+      </div>
+    </div>
+
+    <div class="integration-grid">
+      <div class="integ-card">
+        <div class="integ-num">01</div>
+        <div class="integ-title">ETIO 트리거 기능 완전 내장</div>
+        <div class="integ-desc">Zero Delay FPGA 기반 트리거 제어, Working Area 특허, 엔코더 4/16/32체배, 전 채널 Isolation 절연까지 ETIO의 모든 기능이 Tagger 안에 포함됩니다.</div>
+      </div>
+      <div class="integ-card">
+        <div class="integ-num">02</div>
+        <div class="integ-title">NSync 조명 제어 통합</div>
+        <div class="integ-desc">골든타임 90% Feed로 조명 밝기 90% 도달 시점을 실시간 감지하여 최적 구간만 촬상합니다. 조명 열화 사전 감지와 100ns 스트로브 응답으로 과검을 구조적으로 제거합니다.</div>
+      </div>
+      <div class="integ-card">
+        <div class="integ-num">03</div>
+        <div class="integ-title">Signal Scope 실시간 로깅</div>
+        <div class="integ-desc">24시간/365일 Raw 데이터(.sscp) 저장, 디지털 오실로스코프 기능, 문제 발생 시 파형으로 즉각 가시화합니다. 예지보전 솔루션으로 확장 가능합니다.</div>
+      </div>
+      <div class="integ-card">
+        <div class="integ-num">04</div>
+        <div class="integ-title">TAG-CL4F — 4채널 카메라 지원</div>
+        <div class="integ-desc">Camera Link 4채널을 동시에 지원하는 Tagger 전용 모델입니다. Multi-exposed 촬영, 영상 누락 확인, PC Grabber 1·2와 동시 연동이 가능합니다.</div>
+      </div>
+      <div class="integ-card">
+        <div class="integ-num">05</div>
+        <div class="integ-title">리피터 지원</div>
+        <div class="integ-desc">장거리 신호 전송 환경에서도 Tagger는 리피터를 통해 안정적인 신호 품질을 유지합니다. 대형 라인이나 복잡한 공장 환경에서도 완벽한 동기화를 보장합니다.</div>
+      </div>
+      <div class="integ-card">
+        <div class="integ-num">06</div>
+        <div class="integ-title">AI 연동 플랫폼</div>
+        <div class="integ-desc">태그된 Raw 데이터는 AI 딥러닝 모델의 입력으로 바로 활용 가능합니다. 불량의 '모양'과 '발생 상황'을 동시에 학습하여 판정 정확도를 획기적으로 향상시킵니다.</div>
+      </div>
+    </div>
+    <a href="#sec-usecase" class="next-sec">다음 — 적용 분야</a>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     05 — USE CASES
+══════════════════════════════════════ -->
+<div class="sec-wrap alt" id="sec-usecase">
+      <div>
+        <h2 class="section-title">적용 <em>분야</em></h2>
+        <p class="section-desc">딥러닝 지도학습에 어려움을 겪는 모든 검사 라인에 적용됩니다</p>
+      </div>
+    </div>
+
+    <div class="usecase-grid">
+      <div class="usecase-card">
+        <div class="usecase-icon">AI</div>
+        <div class="usecase-industry">AI Vision</div>
+        <div class="usecase-title">AI 딥러닝 검사</div>
+        <div class="usecase-point">불량 '모양' + '발생 상황' 동시 학습<br>오염 이미지 제거로 모델 정확도 급상승</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">⬡</div>
+        <div class="usecase-industry">Semiconductor</div>
+        <div class="usecase-title">반도체 후공정</div>
+        <div class="usecase-point">정확한 위치 태깅으로 불량 위치 패턴 분석<br>예지보전 솔루션과 연동 가능</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">⚡</div>
+        <div class="usecase-industry">Secondary Battery</div>
+        <div class="usecase-title">2차전지 검사</div>
+        <div class="usecase-point">조명·속도 상태 태깅으로 불량 유출 원인 추적<br>데이터 기반 품질 개선 체계 구축</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">▦</div>
+        <div class="usecase-industry">Display / PCB</div>
+        <div class="usecase-title">디스플레이·PCB</div>
+        <div class="usecase-point">조명 전압 강하 이미지 자동 분류<br>재학습 횟수 획기적 절감</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">FAB</div>
+        <div class="usecase-industry">Smart Factory</div>
+        <div class="usecase-title">스마트팩토리</div>
+        <div class="usecase-point">24시간 Raw 데이터 로깅으로 예지보전<br>Industry 5.0 데이터 플랫폼 구축 가능</div>
+      </div>
+      <div class="usecase-card">
+        <div class="usecase-icon">⊕</div>
+        <div class="usecase-industry">Automotive / EV</div>
+        <div class="usecase-title">자동차 전장 부품</div>
+        <div class="usecase-point">검사 신뢰성 데이터 완전 기록·증명<br>리콜 리스크 사전 차단, 추적성 확보</div>
+      </div>
+    </div>
+    <a href="#sec-effects" class="next-sec">다음 — 도입 효과</a>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     06 — EXPECTED EFFECTS
+══════════════════════════════════════ -->
+<div class="sec-wrap" id="sec-effects">
+  <section>
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <div>
+        <h2 class="section-title">도입 시 <em>기대 효과</em></h2>
+        <p class="section-desc">오염 데이터 없는 AI 학습 — 불량 이유를 아는 검사 시스템으로 전환</p>
+      </div>
+    </div>
+
+    <div class="effects-grid">
+      <div class="effect-card">
+        <div class="effect-val">↑AI</div>
+        <div class="effect-title">AI 판정 정확도 향상</div>
+        <div class="effect-desc">발생 상황 학습으로<br>오판단 구조적 제거</div>
+      </div>
+      <div class="effect-card">
+        <div class="effect-val">4h</div>
+        <div class="effect-title">트러블슈팅 단축</div>
+        <div class="effect-desc">일주일 걸리던 분석<br>평균 4시간 이내 해결</div>
+      </div>
+      <div class="effect-card">
+        <div class="effect-val">Zero</div>
+        <div class="effect-title">오염 학습 데이터</div>
+        <div class="effect-desc">태그 기반 자동 분류로<br>깨끗한 학습 데이터 확보</div>
+      </div>
+      <div class="effect-card">
+        <div class="effect-val">24/7</div>
+        <div class="effect-title">데이터 로깅</div>
+        <div class="effect-desc">365일 Raw 데이터 저장<br>예지보전 솔루션 확장</div>
+      </div>
+    </div>
+
+    <div class="effects-notice">
+      <p><strong>Tagger는 검사 데이터를 자산으로 만드는 유일한 방법입니다.</strong></p>
+      <p>단순 이미지에서 '이유가 기록된 데이터'로 — <strong>AI 검사의 품질이 달라집니다.</strong></p>
+    </div>
+
+    <!-- Closing -->
+    <div style="margin-top:60px; text-align:center; padding:60px 40px; border:1px solid var(--border); background:var(--panel); position:relative; overflow:hidden;">
+      <div style="position:absolute; inset:0; background:radial-gradient(ellipse 60% 60% at 50% 50%, rgba(0,255,136,0.05) 0%, transparent 70%); pointer-events:none;"></div>
+      <div style="position:relative; z-index:1;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-muted); letter-spacing:0.2em; margin-bottom:20px; text-transform:uppercase;">// 불량의 이유를 데이터로 남기십시오</div>
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:clamp(28px,4vw,52px); color:var(--white); letter-spacing:0.06em; line-height:1.2; margin-bottom:16px;">이미지에 이유를 붙이는 순간,<br><span style="color:var(--accent);">AI의 눈이 달라집니다.</span></div>
+        <p style="font-size:14px; color:var(--text-muted); margin-bottom:32px;">AI 최적화 메타데이터 플랫폼</p>
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:40px; color:var(--accent); letter-spacing:0.15em;">TAGGER</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">ARA Electronics</div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--accent); letter-spacing:0.15em; margin-bottom:8px;">SIGNAL SCOPE SERIES · 2026</div>
+      <p class="footer-desc">Tagger는 검사 이미지에 물리적 데이터(속도, 전류, 타이밍)를 삽입하는 AI 최적화 메타데이터 플랫폼입니다. ETIO·NSync·Signal Scope를 완전 통합한 끝판왕 솔루션.</p>
+      <div style="margin-top:16px; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.12em;min-width:44px;">SALES</span>
+          <a href="mailto:Sales@araelectronics.com" style="color:var(--text-muted);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'">Sales@araelectronics.com</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.12em;min-width:44px;">TECH</span>
+          <a href="mailto:Sales@araelectronics.com" style="color:var(--text-muted);text-decoration:none;" onmouseover="this.style.color='var(--accent2)'" onmouseout="this.style.color='var(--text-muted)'">Sales@araelectronics.com</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.12em;min-width:44px;">TEL</span>
+          <a href="tel:+82704120777" style="color:var(--text-muted);text-decoration:none;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'">+82.70.4120.7771</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;font-size:12px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.12em;min-width:44px;">ADDR</span>
+          <span style="color:var(--text-muted);">본사 경기도 화성시 동탄기흥로 570-6 (골든아이타워 626호) 공장 경기도 부천시 평천로850번길 19 2층</span>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--accent); letter-spacing:0.1em; margin-bottom:8px;">TAGGER · 태거</div>
+      <p class="footer-copy"><a href="https://www.araelectronics.com" target="_blank" style="color:inherit;text-decoration:none;margin-right:16px;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='inherit'">🌐 www.araelectronics.com</a> © 2026 ARA Electronics. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll progress
+  window.addEventListener('scroll', () => {
+    const total = document.body.scrollHeight - window.innerHeight;
+    document.getElementById('scrollBar').style.width = (window.scrollY / total * 100) + '%';
+  });
+
+  // Nav active state
+  const sectionIds = ['sec-concept','sec-metadata','sec-problem','sec-integration','sec-usecase','sec-effects'];
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const navCounter = document.getElementById('nav-counter');
+  const total = sectionIds.length;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id || entry.target.closest('[id]')?.id;
+        const idx = sectionIds.indexOf(id);
+        navLinks.forEach(a => {
+          a.classList.remove('active');
+          if (a.getAttribute('href') === '#' + id) a.classList.add('active');
+        });
+        if (navCounter && idx >= 0) {
+          const n = String(idx + 1).padStart(2, '0');
+          navCounter.textContent = n + ' / ' + String(total).padStart(2, '0');
+        }
+      }
+    });
+  }, { threshold: 0.35 });
+
+  sectionIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      const wrap = el.closest('.sec-wrap') || el;
+      observer.observe(wrap);
+    }
+  });
+
+  // Fade-in on scroll
+  const fadeEls = document.querySelectorAll('.cf-card, .meta-card, .prob-card, .integ-card, .usecase-card, .effect-card');
+  fadeEls.forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = `opacity 0.5s ease ${(i % 4) * 0.1}s, transform 0.5s ease ${(i % 4) * 0.1}s`;
+  });
+
+  const fadeObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  fadeEls.forEach(el => fadeObs.observe(el));
+</script>
+<!-- ══ SHOOTING STAR CANVAS ══ -->
+<canvas id="star-canvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9997;"></canvas>
+<script>
+(function(){
+  var cv=document.getElementById('star-canvas');
+  var ctx=cv.getContext('2d');
+  var W,H,stars=[],bgStars=[];
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;initBgStars();}
+  window.addEventListener('resize',resize);resize();
+  function rnd(a,b){return a+Math.random()*(b-a);}
+
+  /* ── 배경 별 (고정 반짝임) ── */
+  function initBgStars(){
+    bgStars=[];
+    for(var i=0;i<120;i++){
+      bgStars.push({
+        x:rnd(0,W), y:rnd(0,H),
+        r:rnd(0.3,1.4),
+        alpha:rnd(0.2,0.7),
+        blinkSpeed:rnd(0.008,0.03),
+        blinkOff:rnd(0,Math.PI*2),
+        col:Math.random()>.15 ? '255,255,255' : (Math.random()>.5 ? '200,230,255' : '255,240,180'),
+        t:rnd(0,1000)
+      });
+    }
+  }
+
+  /* ── 별똥별 ── */
+  function makeStar(){
+    var angle = rnd(25,55) * Math.PI/180;  /* 대각선 25~55도 */
+    var speed = rnd(10,22);
+    var len   = rnd(90,220);
+    /* 화면 상단 또는 좌측 랜덤 진입 */
+    var startX = Math.random()>.4 ? rnd(W*0.05, W*0.95) : rnd(-60, W*0.3);
+    var startY = Math.random()>.4 ? rnd(-60, H*0.3)     : rnd(0, H*0.4);
+    return{
+      x:startX, y:startY,
+      vx: Math.cos(angle)*speed,
+      vy: Math.sin(angle)*speed,
+      len:len,
+      life:1.0,          /* 1→0 페이드 */
+      decay:rnd(0.014,0.028),
+      width:rnd(1.2,2.4),
+      col: Math.random()>.2 ? '255,255,255' : (Math.random()>.5 ? '180,220,255' : '255,250,200'),
+      active:false,
+      delay:rnd(0,0)     /* 즉시 활성 */
+    };
+  }
+
+  /* 별똥별 스케줄러 — 불규칙 간격으로 생성 */
+  var lastSpawn=0;
+  var nextInterval=rnd(900,2800); /* ms */
+  function spawnIfReady(now){
+    if(now-lastSpawn > nextInterval){
+      /* 한 번에 1~2개 */
+      var count = Math.random()>.75 ? 2 : 1;
+      for(var i=0;i<count;i++){
+        var s=makeStar();
+        s.active=true;
+        /* 2개일 때 두 번째는 살짝 딜레이 */
+        if(i===1) s._startDelay = rnd(80,300);
+        else s._startDelay=0;
+        s._spawnTime=now;
+        stars.push(s);
+      }
+      lastSpawn=now;
+      nextInterval=rnd(900,3200);
+    }
+  }
+
+  function drawBgStars(){
+    bgStars.forEach(function(s){
+      s.t+=0.016;
+      var a=s.alpha*(0.5+0.5*Math.sin(s.t*s.blinkSpeed*100+s.blinkOff));
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle='rgba('+s.col+','+a+')';
+      ctx.fill();
+    });
+  }
+
+  function drawShootingStar(s){
+    if(s.life<=0) return;
+    /* 꼬리 — 선형 그라디언트 */
+    var tx=s.x - Math.cos(Math.atan2(s.vy,s.vx))*s.len*s.life;
+    var ty=s.y - Math.sin(Math.atan2(s.vy,s.vx))*s.len*s.life;
+    var grd=ctx.createLinearGradient(tx,ty,s.x,s.y);
+    grd.addColorStop(0,'rgba('+s.col+',0)');
+    grd.addColorStop(0.6,'rgba('+s.col+','+(s.life*0.3)+')');
+    grd.addColorStop(1,'rgba('+s.col+','+(s.life*0.95)+')');
+    ctx.beginPath();
+    ctx.moveTo(tx,ty);
+    ctx.lineTo(s.x,s.y);
+    ctx.strokeStyle=grd;
+    ctx.lineWidth=s.width*s.life;
+    ctx.lineCap='round';
+    ctx.stroke();
+    /* 머리 글로우 */
+    var gr=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.width*4);
+    gr.addColorStop(0,'rgba('+s.col+','+(s.life*0.9)+')');
+    gr.addColorStop(1,'rgba('+s.col+',0)');
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.width*4,0,Math.PI*2);
+    ctx.fillStyle=gr;
+    ctx.fill();
+  }
+
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    var now=performance.now();
+    spawnIfReady(now);
+    drawBgStars();
+    /* 별똥별 업데이트 */
+    stars=stars.filter(function(s){
+      if(now-s._spawnTime < (s._startDelay||0)) return true; /* 딜레이 대기 */
+      s.x+=s.vx;
+      s.y+=s.vy;
+      s.life-=s.decay;
+      drawShootingStar(s);
+      return s.life>0 && s.x<W+100 && s.y<H+100;
+    });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+</script>
+
+</body>
+</html>

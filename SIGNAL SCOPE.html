@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Signal Scope TAG-SCP32 — ARA Electronics</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06080b;--dark:#0c0f14;--panel:#111520;--panel2:#161b28;
+  --bdr:rgba(255,255,255,0.07);--white:#f0f2f5;--text:#d0d5de;--muted:#6b7588;
+  --green:#00e589;--green2:#00c46e;--amber:#ffb020;--red:#ff4757;--blue:#4a9eff;
+}
+html,body{width:100%;height:100%;background:#000;font-family:'Noto Sans KR',sans-serif;overflow:hidden;}
+
+/* ── TOP NAV ── */
+.top-nav{
+  position:fixed;top:0;left:0;right:0;z-index:2000;
+  background:rgba(6,8,11,0.95);
+  border-bottom:1px solid rgba(0,229,137,0.15);
+  backdrop-filter:blur(12px);
+  display:flex;align-items:center;
+  padding:0 24px;
+  height:48px;
+}
+.top-nav-brand{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;font-weight:700;color:var(--green);
+  letter-spacing:0.2em;text-transform:uppercase;
+  margin-right:20px;white-space:nowrap;
+  padding-right:20px;border-right:1px solid var(--bdr);
+  flex-shrink:0;
+}
+.top-nav-items{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none;}
+.top-nav-items::-webkit-scrollbar{display:none;}
+.nav-tab{
+  display:flex;align-items:center;gap:6px;
+  padding:0 14px;height:48px;
+  font-size:11px;font-weight:500;color:var(--muted);
+  letter-spacing:0.04em;white-space:nowrap;
+  cursor:pointer;border:none;background:transparent;
+  border-bottom:2px solid transparent;
+  transition:color .2s,border-color .2s,background .2s;
+  font-family:'Noto Sans KR',sans-serif;
+}
+.nav-tab:hover{color:var(--white);background:rgba(255,255,255,0.04);}
+.nav-tab.active{color:var(--green);border-bottom-color:var(--green);background:rgba(0,229,137,0.06);}
+.nav-tab .tab-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--green);opacity:0.6;
+  background:rgba(0,229,137,0.1);
+  padding:2px 5px;border-radius:3px;
+  transition:background .2s, color .2s, opacity .2s;
+}
+/* 활성 탭 배지 — 채워진 배경 */
+.nav-tab.active .tab-num{
+  color:#000;background:var(--green);opacity:1;font-weight:700;
+}
+/* 활성 탭 상단 강조선 */
+.nav-tab.active::before{
+  content:'';position:absolute;top:0;left:0;right:0;
+  height:2px;background:var(--green);opacity:0.5;
+}
+.nav-tab{position:relative;}
+
+/* ── DECK ── */
+.deck{width:100vw;height:100vh;padding-top:48px;position:relative;overflow:hidden;}
+/* ── SLIDE TRANSITION ── */
+.slide{
+  position:absolute;inset:0;padding-top:48px;
+  width:100%;height:100%;background:var(--bg);
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transform:translateX(24px);
+  transition:opacity .3s ease, transform .3s ease;
+}
+.slide.active{
+  opacity:1;pointer-events:auto;
+  transform:translateX(0);
+  display:flex;
+}
+.slide.exit{
+  opacity:0;transform:translateX(-24px);
+  pointer-events:none;
+}
+.slide::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(0,229,137,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,137,0.025) 1px,transparent 1px);
+  background-size:64px 64px;pointer-events:none;
+}
+.slide-topbar{height:3px;background:linear-gradient(90deg,var(--green),rgba(0,229,137,0) 60%);}
+
+/* ── BOTTOM NAV ── */
+.nav{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:14px;z-index:1000;
+}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.18);cursor:pointer;transition:background .3s,transform .3s;}
+.nav-dot.active{background:var(--green);transform:scale(1.4);}
+.nav-btn{
+  width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);color:var(--text);font-size:16px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;
+}
+.nav-btn:hover{background:rgba(0,229,137,0.15);color:var(--green);border-color:rgba(0,229,137,0.3);}
+.slide-counter{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);min-width:40px;text-align:center;}
+
+/* ── SLIDE INNER ── */
+.slide-inner{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;padding:24px 56px 56px;height:100%;overflow:hidden;}
+.part-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--green);margin-bottom:8px;opacity:0.8;}
+.slide-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,3.4vw,44px);color:var(--white);line-height:1;letter-spacing:0.02em;margin-bottom:6px;}
+.slide-title em{color:var(--green);font-style:normal;}
+.slide-subtitle{font-size:13px;color:var(--muted);margin-bottom:16px;}
+
+/* ── BADGE ── */
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;padding:5px 12px;border:1px solid rgba(0,229,137,0.3);color:var(--green);background:rgba(0,229,137,0.06);}
+
+/* ── S1 COVER ── */
+#s1 .slide-inner{justify-content:center;padding:24px 72px 48px;}
+.s1-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--green);margin-bottom:16px;opacity:0.75;}
+.s1-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,10vw,140px);color:var(--white);line-height:0.85;letter-spacing:0.01em;margin-bottom:4px;}
+.s1-title .acc{color:var(--green);}
+.s1-sub{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);letter-spacing:0.12em;margin-bottom:36px;}
+.s1-tagline{font-size:20px;font-weight:500;color:var(--white);line-height:1.55;border-left:3px solid var(--green);padding-left:20px;margin-bottom:32px;max-width:600px;}
+.s1-tagline strong{color:var(--green);}
+.s1-stats{display:flex;gap:0;background:var(--panel);width:100%;}
+.s1-stat{background:var(--panel);padding:24px 36px;flex:1;text-align:center;border-right:1px solid var(--bdr);}
+.s1-stat:last-child{border-right:none;}
+.s1-stat .n{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;color:var(--green);line-height:1;}
+.s1-stat .l{font-size:12px;color:var(--muted);margin-top:5px;}
+
+/* ── PROBLEM ── */
+.prob-card{background:var(--panel);padding:24px 24px;position:relative;display:flex;flex-direction:column;}
+.prob-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.prob-card.r::before{background:var(--red);}
+.prob-card.a::before{background:var(--amber);}
+.prob-card.b::before{background:var(--blue);}
+.prob-num{display:none;}
+.prob-title{font-size:17px;font-weight:700;color:var(--white);margin-bottom:10px;line-height:1.25;}
+.prob-desc{font-size:13px;color:var(--text);line-height:1.75;flex:1;}
+
+/* ── FEATURES ── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr);flex:1;min-height:0;grid-auto-rows:1fr;}
+.feat-card{background:var(--panel);padding:36px 36px 28px;position:relative;overflow:hidden;display:flex;flex-direction:column;transition:background .25s;}
+.feat-card::after{content:'';position:absolute;bottom:0;left:0;width:40px;height:2px;background:var(--green);transition:width .4s;}
+.feat-card:hover::after{width:100%;}
+.feat-card:hover{background:rgba(0,229,137,0.05);}
+/* 히어로 수치 — 상단 지배 */
+.feat-spec{
+  font-family:'JetBrains Mono',monospace;
+  font-size:clamp(48px,5.5vw,72px);
+  font-weight:700;color:var(--green);
+  line-height:1;margin-bottom:20px;
+  letter-spacing:-0.02em;
+}
+.feat-title{font-size:20px;font-weight:700;color:var(--white);margin-bottom:10px;line-height:1.25;}
+.feat-desc{font-size:14px;color:var(--text);line-height:1.8;flex:1;}
+/* 태그 — 하단 레이블 */
+.feat-tag{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:var(--green);opacity:0.5;letter-spacing:0.2em;
+  text-transform:uppercase;margin-top:20px;
+  display:flex;align-items:center;gap:8px;
+  border-top:1px solid rgba(0,229,137,0.1);padding-top:14px;
+}
+.feat-tag::before{content:'';width:14px;height:1px;background:var(--green);opacity:0.5;}
+
+/* ── COMPARE ── */
+.cmp-wrap{display:grid;grid-template-columns:160px 1fr 1fr 1fr;gap:1px;background:var(--bdr);border:1px solid var(--bdr);flex:1;min-height:0;}
+.cmp-col{background:var(--panel);display:flex;flex-direction:column;}
+.cmp-col.hl{background:rgba(0,229,137,.07);}
+.cmp-head{padding:18px 20px;border-bottom:2px solid var(--bdr);font-size:20px;font-weight:700;color:var(--white);text-align:center;}
+.cmp-col.hl .cmp-head{color:var(--green);}
+.cmp-label{padding:0 20px;border-bottom:1px solid var(--bdr);font-size:15px;color:var(--text);font-weight:600;display:flex;align-items:center;justify-content:center;text-align:center;flex:1;}
+.cmp-cell{padding:0 18px;border-bottom:1px solid var(--bdr);font-size:16px;color:var(--text);display:flex;align-items:center;justify-content:center;text-align:center;gap:10px;flex:1;}
+.dot8{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.g{background:var(--green)}.am{background:var(--amber)}.rd{background:var(--red)}
+.cell-g{color:var(--green);font-weight:700;font-size:16px;}
+.cell-r{color:var(--red);}
+.cell-a{color:var(--amber);}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr);min-height:0;}
+.stats-card{background:var(--panel);padding:36px 32px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-evenly;}
+.stats-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--green);}
+.stats-n{font-family:'JetBrains Mono',monospace;font-size:clamp(52px,6vw,80px);font-weight:700;color:var(--green);line-height:1;white-space:nowrap;}
+.stats-l{font-size:16px;font-weight:700;color:var(--white);margin-top:12px;margin-bottom:8px;}
+.stats-d{font-size:13px;color:var(--muted);line-height:1.7;}
+
+/* ── USE CASES ── */
+.uc-card{background:var(--panel);padding:18px 20px;border-top:2px solid transparent;transition:border-color .3s;display:flex;flex-direction:column;}
+.uc-card:hover{border-top-color:var(--green);background:rgba(0,200,83,.03);}
+.uc-industry{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;color:var(--green);margin-bottom:10px;font-weight:700;}
+.uc-title{font-size:22px;font-weight:700;color:var(--white);margin-bottom:10px;line-height:1.3;}
+.uc-prob{font-size:12px;color:var(--red);background:rgba(255,71,87,.06);border-left:3px solid var(--red);padding:8px 10px;margin-bottom:7px;line-height:1.6;flex:1;}
+.uc-sol{font-size:12px;color:var(--green);background:rgba(0,200,83,.06);border-left:3px solid var(--green);padding:8px 10px;line-height:1.6;}
+
+/* ── WORKFLOW ── */
+.wf-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr);min-height:0;}
+.wf-step{background:var(--panel);padding:32px 24px 24px;display:flex;flex-direction:column;gap:14px;position:relative;}
+.wf-step:not(:last-child)::after{content:'→';position:absolute;bottom:24px;right:-12px;font-size:18px;color:var(--green);z-index:2;}
+.wf-num{width:64px;height:64px;border:2px solid rgba(0,229,137,.4);background:rgba(0,229,137,.06);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:var(--green);flex-shrink:0;}
+.wf-title{font-size:26px;font-weight:700;color:var(--white);}
+.wf-desc{font-size:14px;color:var(--text);line-height:1.75;flex:1;}
+.wf-note{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--green);opacity:0.7;border-top:1px solid rgba(0,229,137,.2);padding-top:12px;}
+
+/* ── WHAT ── */
+.what-highlight{background:rgba(0,229,137,0.06);border-left:3px solid var(--green);padding:14px 18px;}
+.what-highlight p{font-size:14px;color:var(--text);line-height:1.75;}
+.what-highlight strong{color:var(--green);}
+.what-list{list-style:none;}
+.what-list li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--bdr);font-size:13px;color:var(--text);line-height:1.5;}
+.what-list li:last-child{border-bottom:none;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:6px;}
+
+/* ── CLOSING ── */
+.closing-pre{font-size:16px;color:var(--muted);margin-bottom:16px;font-weight:400;letter-spacing:0.06em;}
+.closing-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6vw,80px);color:var(--white);line-height:1;letter-spacing:0.02em;margin-bottom:14px;}
+.closing-title em{color:var(--green);font-style:normal;}
+.closing-sub{font-size:16px;color:var(--text);margin-bottom:50px;line-height:1.7;}
+.closing-contact{display:flex;flex-direction:column;gap:10px;align-items:center;width:100%;}
+.contact-row{display:flex;align-items:center;gap:18px;padding:14px 28px;border:1px solid var(--bdr);background:var(--panel);width:100%;max-width:520px;}
+.ct{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;color:var(--green);width:56px;font-weight:700;}
+.cv{font-size:14px;font-weight:500;color:var(--white);text-decoration:none;}
+.cv-link{transition:color .2s;}
+.cv-link:hover{color:var(--green);}
+.contact-btn{
+  display:inline-flex;align-items:center;margin-left:auto;
+  padding:5px 14px;font-family:'JetBrains Mono',monospace;
+  font-size:11px;font-weight:600;letter-spacing:0.08em;
+  text-decoration:none;color:var(--green);
+  background:rgba(0,229,137,0.08);border:1px solid rgba(0,229,137,0.3);
+  transition:background .2s,border-color .2s;
+}
+.contact-btn:hover{background:rgba(0,229,137,0.18);border-color:rgba(0,229,137,0.7);}
+.contact-btn-dim{color:var(--muted);background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.12);}
+.contact-btn-dim:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.3);color:var(--white);}
+
+  /* ── ARA 인디고블루 브랜드 그라데이션 ── */
+  :root {
+    --ara-grad: linear-gradient(160deg, #6e7fab 0%, #4f5c8d 30%, #383f72 60%, #16152f 100%);
+  }
+  .ara-grad-text {
+    background: var(--ara-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-text-stroke: 1.2px rgba(255,255,255,0.55);
+    paint-order: stroke fill;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.55));
+  }
+</style>
+</head>
+<body>
+
+<!-- ── TOP NAV ── -->
+<nav class="top-nav">
+  <div class="top-nav-brand ara-grad-text">SignalScope</div>
+  <div class="top-nav-items" id="topNavItems"></div>
+</nav>
+
+<div class="deck" id="deck">
+
+<!-- S1: COVER -->
+<div class="slide active" id="s1">
+  <div class="slide-topbar"></div>
+  <div class="slide-inner" style="padding:0;justify-content:space-between;">
+
+    <!-- 중앙 콘텐츠 -->
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 80px;">
+      <p class="s1-eyebrow" style="justify-content:center;">ARA Electronics · Signal Diagnostics · 2026</p>
+      <h1 class="s1-title" style="font-size:clamp(80px,12vw,160px);text-align:center;line-height:0.88;margin-bottom:20px;">
+        Signal <span class="acc">Scope</span>
+      </h1>
+      <p class="s1-sub" style="margin-bottom:32px;">TAG-SCP32 &nbsp;/&nbsp; Real-Time Signal Analyzer &amp; Data Logger</p>
+      <p class="s1-tagline" style="text-align:center;border-left:none;padding-left:0;border-top:1px solid rgba(0,229,137,0.2);border-bottom:1px solid rgba(0,229,137,0.2);padding:18px 0;max-width:640px;">
+        신호를 눈으로 보는 순간, 문제의 답이 보입니다.<br>
+        트러블슈팅 <strong>1주일 → 4시간으로 단축.</strong>
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:24px;justify-content:center;">
+        <span class="badge">FPGA 기반</span>
+        <span class="badge">10ns Sampling</span>
+        <span class="badge">20ch 동시 캡처</span>
+        <span class="badge">Galvanic Isolation</span>
+        <span class="badge">Schmitt Trigger</span>
+        <span class="badge">1Gbps LAN</span>
+      </div>
+    </div>
+
+    <!-- 하단 KPI 풀너비 바 -->
+    <div class="s1-stats" style="width:100%;border-top:1px solid var(--bdr);border-left:none;border-right:none;border-bottom:none;">
+      <div class="s1-stat" style="flex:1;"><div class="n">10ns</div><div class="l">최소 샘플링</div></div>
+      <div class="s1-stat" style="flex:1;"><div class="n">20ch</div><div class="l">동시 캡처</div></div>
+      <div class="s1-stat" style="flex:1;"><div class="n">4H</div><div class="l">평균 문제해결</div></div>
+      <div class="s1-stat" style="flex:1;"><div class="n">365일</div><div class="l">연속 로깅</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- S2: PROBLEM -->
+<div class="slide" id="s2">
+  <div class="slide-topbar"></div>
+  <div class="slide-inner">
+    <span class="part-label">Part 01 — Problem</span>
+    <h2 class="slide-title">동기화가 깨질 때 <em>생기는 문제들</em></h2>
+    <p class="slide-subtitle">배선인지, 노이즈인지, 설정인지 — 신호를 보기 전엔 알 수 없습니다.</p>
+    <div style="display:flex;flex-direction:column;gap:1px;background:var(--bdr);border:1px solid var(--bdr);flex:1;min-height:0;">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);flex:1;">
+        <div class="prob-card r"><span class="prob-num">A-01</span><div class="prob-title">과검 속출</div><p class="prob-desc">조명과 카메라 박자가 1ms만 어긋나도 정상 제품이 불량으로 판정됩니다. 이미지가 어둡거나 흐릿하게 촬영됩니다.</p></div>
+        <div class="prob-card r"><span class="prob-num">A-02</span><div class="prob-title">고속 트리거 유실</div><p class="prob-desc">장비가 빨라지면 OS 기반 시스템은 신호 속도를 따라가지 못해 특정 구간의 촬영을 아예 놓칩니다.</p></div>
+        <div class="prob-card r"><span class="prob-num">A-03</span><div class="prob-title">유령 트리거(Ghost)</div><p class="prob-desc">미세한 진동·노이즈를 실제 신호로 오인하여 제품이 없는데도 촬영. Backlash 오차도 같은 원인입니다.</p></div>
+      </div>
+      <div style="background:rgba(255,71,87,0.12);border-left:4px solid var(--red);padding:12px 24px;display:flex;align-items:center;gap:16px;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--red);letter-spacing:0.06em;white-space:nowrap;">→ 검사 신뢰성 하락</span>
+        <span style="font-size:13px;color:var(--text);">정상 제품 불량 판정 · 촬영 누락 · 유령 트리거 반복</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);flex:1;">
+        <div class="prob-card a"><span class="prob-num">B-01</span><div class="prob-title">OS 스케줄링 지연</div><p class="prob-desc">Windows OS가 백그라운드 작업을 처리하느라 트리거를 제때 내보내지 못합니다. ±5~50ms 타이밍 오차.</p></div>
+        <div class="prob-card a"><span class="prob-num">B-02</span><div class="prob-title">노이즈 간섭 취약</div><p class="prob-desc">디지털 노이즈 필터 없이는 주변 장비의 전기적 노이즈를 실제 신호로 오인합니다. GND 미연결 시 더 심각.</p></div>
+        <div class="prob-card a"><span class="prob-num">B-03</span><div class="prob-title">장비 보호 실패</div><p class="prob-desc">전기적 절연 없이 외부 단락 발생 시 고가의 카메라·Frame Grabber까지 함께 손상될 수 있습니다.</p></div>
+      </div>
+      <div style="background:rgba(255,176,32,0.10);border-left:4px solid var(--amber);padding:12px 24px;display:flex;align-items:center;gap:16px;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--amber);letter-spacing:0.06em;white-space:nowrap;">→ 시스템 성능 저하</span>
+        <span style="font-size:13px;color:var(--text);">나노초 타이밍 불가 · 노이즈 오인 · 장비 손상 리스크</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);flex:1;">
+        <div class="prob-card b"><span class="prob-num">C-01</span><div class="prob-title">원인 불명 누락</div><p class="prob-desc">촬영이 안 될 때 배선인지, 노이즈인지, 설정인지 파악할 길이 없습니다. 신호를 눈으로 볼 수 없기 때문입니다.</p></div>
+        <div class="prob-card b"><span class="prob-num">C-02</span><div class="prob-title">트러블슈팅 장기화</div><p class="prob-desc">신호를 눈으로 볼 수 없어 문제 해결에 일주일 이상 소비됩니다. 라인 가동 중단 손실이 누적됩니다.</p></div>
+        <div class="prob-card b"><span class="prob-num">C-03</span><div class="prob-title">AI 학습 데이터 오염</div><p class="prob-desc">조명 전압 강하로 어둡게 찍힌 이미지를 불량으로 학습하면 AI 모델 정확도가 급감합니다.</p></div>
+      </div>
+      <div style="background:rgba(74,158,255,0.09);border-left:4px solid var(--blue);padding:12px 24px;display:flex;align-items:center;gap:16px;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--blue);letter-spacing:0.06em;white-space:nowrap;">→ 유지보수 장기화</span>
+        <span style="font-size:12px;color:var(--text);">원인 특정 불가 · 일주일+ 라인 정지 · AI 모델 정확도 급감</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S3: SOLUTION & FEATURES -->
+<div class="slide" id="s3">
+  <div class="slide-topbar"></div>
+  <div class="slide-inner" style="padding-bottom:28px;">
+    <span class="part-label">Part 02 — Solution &amp; Features</span>
+    <h2 class="slide-title">Signal Scope — <em>6가지 핵심 기능</em></h2>
+    <p class="slide-subtitle">FPGA 기반 실시간 신호 분석기 — 진단 · 검증 · 로깅 · 보호를 하나의 장비로</p>
+    <div class="feat-grid" style="grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);flex:1;min-height:0;">
+      <div class="feat-card">
+        <div class="feat-spec">20ch</div>
+        <div class="feat-title">동시 파형 캡처</div>
+        <p class="feat-desc">엔코더·트리거·I/O를 하나의 타임라인으로 기록. 원인 불명 누락 즉각 시각화.</p>
+        <div class="feat-tag">Oscilloscope · I/O</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-spec">10ns</div>
+        <div class="feat-title">초고속 샘플링</div>
+        <p class="feat-desc">10ns~61µs 가변. 고속 라인의 미세 타이밍 오차도 나노초 단위로 포착.</p>
+        <div class="feat-tag">Sampling · 10ns~61µs</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-spec">100%</div>
+        <div class="feat-title">전 채널 갈바닉 절연</div>
+        <p class="feat-desc">모든 입출력에 전기적 절연 적용. 노이즈 차단 + 카메라·FG 보호.</p>
+        <div class="feat-tag">Isolation · Galvanic</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-spec">Zero</div>
+        <div class="feat-title">슈미트 노이즈 차단</div>
+        <p class="feat-desc">5~24V 입력의 노이즈성 신호를 실제 신호와 분리. 유령 트리거 원천 차단.</p>
+        <div class="feat-tag">Schmitt · 5~24V</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-spec">365일</div>
+        <div class="feat-title">연속 데이터 로깅</div>
+        <p class="feat-desc">.sscp 저장 → 문제 시점 소급 분석. 예지보전 Raw 데이터 자동 축적.</p>
+        <div class="feat-tag">Logging · 24H / 365일</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-spec">가상</div>
+        <div class="feat-title">가상 엔코더 시뮬레이션</div>
+        <p class="feat-desc">Factory Encoder로 실물 없이 셋업 사전 검증. Bypass 출력 연동 확인.</p>
+        <div class="feat-tag">Virtual Encoder</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S4: COMPARISON -->
+<div class="slide" id="s4">
+  <div class="slide-topbar"></div>
+  <div class="slide-inner">
+    <span class="part-label">Part 03 — Comparison</span>
+    <h2 class="slide-title">신호 처리 <em>방식 비교</em></h2>
+    <p class="slide-subtitle">신호 제어의 주체가 무엇이냐에 따라 타이밍 안정성이 결정됩니다.</p>
+    <div class="cmp-wrap">
+      <div class="cmp-col">
+        <div class="cmp-head" style="color:var(--muted);font-size:13px;text-align:center;">비교 항목</div>
+        <div class="cmp-label">응답 시간</div>
+        <div class="cmp-label">타이밍 지터</div>
+        <div class="cmp-label">신호 파형 분석</div>
+        <div class="cmp-label">노이즈 대응</div>
+        <div class="cmp-label">장비 보호</div>
+        <div class="cmp-label">데이터 로깅</div>
+        <div class="cmp-label">고속 라인 적합</div>
+      </div>
+      <div class="cmp-col">
+        <div class="cmp-head">Windows OS</div>
+        <div class="cmp-cell"><span class="dot8 rd"></span><span class="cell-r">10~100ms</span></div>
+        <div class="cmp-cell"><span class="dot8 rd"></span><span class="cell-r">±5~50ms</span></div>
+        <div class="cmp-cell"><span class="dot8 rd"></span><span class="cell-r">불가</span></div>
+        <div class="cmp-cell"><span class="dot8 rd"></span><span class="cell-r">취약</span></div>
+        <div class="cmp-cell"><span class="dot8 rd"></span><span class="cell-r">없음</span></div>
+        <div class="cmp-cell"><span class="dot8 am"></span><span class="cell-a">소프트웨어</span></div>
+        <div class="cmp-cell"><span class="dot8 rd"></span><span class="cell-r">부적합</span></div>
+      </div>
+      <div class="cmp-col">
+        <div class="cmp-head">PLC</div>
+        <div class="cmp-cell"><span class="dot8 am"></span><span class="cell-a">1~10ms</span></div>
+        <div class="cmp-cell"><span class="dot8 am"></span><span class="cell-a">스캔주기 의존</span></div>
+        <div class="cmp-cell"><span class="dot8 rd"></span><span class="cell-r">불가</span></div>
+        <div class="cmp-cell"><span class="dot8 am"></span><span class="cell-a">보통</span></div>
+        <div class="cmp-cell"><span class="dot8 am"></span><span class="cell-a">제한적</span></div>
+        <div class="cmp-cell"><span class="dot8 am"></span><span class="cell-a">제한적</span></div>
+        <div class="cmp-cell"><span class="dot8 am"></span><span class="cell-a">제한</span></div>
+      </div>
+      <div class="cmp-col hl">
+        <div class="cmp-head">Signal Scope (FPGA)</div>
+        <div class="cmp-cell"><span class="dot8 g"></span><span class="cell-g">&lt; 1µs</span></div>
+        <div class="cmp-cell"><span class="dot8 g"></span><span class="cell-g">&lt; 100ns</span></div>
+        <div class="cmp-cell"><span class="dot8 g"></span><span class="cell-g">20ch 실시간</span></div>
+        <div class="cmp-cell"><span class="dot8 g"></span><span class="cell-g">슈미트 + 절연</span></div>
+        <div class="cmp-cell"><span class="dot8 g"></span><span class="cell-g">전 채널 절연</span></div>
+        <div class="cmp-cell"><span class="dot8 g"></span><span class="cell-g">365일 연속</span></div>
+        <div class="cmp-cell"><span class="dot8 g"></span><span class="cell-g">최적</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S5: PERFORMANCE -->
+<div class="slide" id="s5">
+  <div class="slide-topbar"></div>
+  <div class="slide-inner" style="gap:1px;">
+    <span class="part-label">Part 04 — Performance</span>
+    <h2 class="slide-title">도입 시 <em>기대 효과</em></h2>
+    <p class="slide-subtitle">수치로 증명하는 Signal Scope의 가치.</p>
+
+    <!-- 상단: KPI 4개 — flex:1로 절반 차지 -->
+    <div class="stats-grid" style="flex:1;min-height:0;margin-bottom:1px;">
+      <div class="stats-card">
+        <div class="stats-n">4H<span style="font-size:0.35em;opacity:.7;margin-left:6px;">이내</span></div>
+        <div class="stats-l">트러블슈팅 단축</div>
+        <p class="stats-d">일주일 이상 걸리던 신호 분석 시간을 평균 4시간 이내로 단축. 라인 가동률 극대화.</p>
+      </div>
+      <div class="stats-card">
+        <div class="stats-n" style="color:#4a9eff;">10ns</div>
+        <div class="stats-l">최소 샘플링 속도</div>
+        <p class="stats-d">10ns~61µs 가변 샘플링으로 고속 라인에서도 나노초 단위 신호 분석 가능.</p>
+      </div>
+      <div class="stats-card">
+        <div class="stats-n" style="color:#ffb020;">20ch</div>
+        <div class="stats-l">동시 캡처 채널</div>
+        <p class="stats-d">엔코더·트리거·I/O 신호를 동시에 하나의 타임라인으로 기록. 원인을 즉각 시각화.</p>
+      </div>
+      <div class="stats-card">
+        <div class="stats-n">365일</div>
+        <div class="stats-l">연속 데이터 로깅</div>
+        <p class="stats-d">.sscp 파일로 연속 저장. 문제 발생 시점 소급 분석 및 예지보전 데이터 축적.</p>
+      </div>
+    </div>
+
+    <!-- 하단: 시나리오 3개 — flex:1로 나머지 절반 차지 -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr);flex:1;min-height:0;">
+      <div style="background:var(--panel);padding:32px 36px;border-left:4px solid var(--red);display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--red);letter-spacing:0.15em;margin-bottom:14px;text-transform:uppercase;">SCENARIO 01 · 과검 손실</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(20px,2.2vw,32px);font-weight:700;color:var(--red);line-height:1;margin-bottom:14px;white-space:nowrap;">연 2~4억 원</div>
+        <p style="font-size:14px;color:var(--text);line-height:1.8;">과검 5~8만개/월 × 재검사 인건비 + 양품 폐기 손실.<br><strong style="color:var(--green);">도입 후 과검률 50%↓ → 연 1~2억 즉시 절감</strong></p>
+      </div>
+      <div style="background:var(--panel);padding:32px 36px;border-left:4px solid var(--amber);display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);letter-spacing:0.15em;margin-bottom:14px;text-transform:uppercase;">SCENARIO 02 · 트러블슈팅 비용</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(20px,2.2vw,32px);font-weight:700;color:var(--amber);line-height:1;margin-bottom:14px;white-space:nowrap;">주당 500만~5천만</div>
+        <p style="font-size:14px;color:var(--text);line-height:1.8;">원인 불명 라인 정지 1주일 기준 손실 추정치.<br><strong style="color:var(--green);">평균 4시간 이내 해결 → 라인 가동률 극대화</strong></p>
+      </div>
+      <div style="background:var(--panel);padding:32px 36px;border-left:4px solid var(--blue);display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);letter-spacing:0.15em;margin-bottom:14px;text-transform:uppercase;">SCENARIO 03 · 예지보전 전환</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(20px,2.2vw,32px);font-weight:700;color:var(--blue);line-height:1;margin-bottom:14px;white-space:nowrap;">유지비용 30%↓</div>
+        <p style="font-size:14px;color:var(--text);line-height:1.8;">긴급 교체(200~500만/회) 방지 + 계획 정비 전환.<br><strong style="color:var(--green);">365일 Raw 데이터 → 조기 이상 감지 체계 구축</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S6: FIELD CASES -->
+<div class="slide" id="s6">
+  <div class="slide-topbar"></div>
+  <div class="slide-inner" style="padding:20px 40px 16px;gap:0;overflow:hidden;">
+
+    <div style="flex-shrink:0;margin-bottom:12px;">
+      <span class="part-label">Part 05 — Field Cases</span>
+      <h2 class="slide-title" style="margin-bottom:2px;">현장 <em>해결 사례</em></h2>
+      <p class="slide-subtitle" style="margin-bottom:0;">GND 노이즈·케이블 이상·신호 구조 문제 — 파형으로 즉시 원인 특정</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr);flex-shrink:0;">
+      <div class="uc-card" style="border-top:2px solid var(--green);">
+        <div class="uc-industry">반도체 · Case A</div>
+        <div class="uc-title">2D LineScan 미촬영 &amp; 노이즈 촬영</div>
+        <div class="uc-prob">문제: 모션드라이버 엔코더 연결 시 GND 미연결로 노이즈 유입</div>
+        <div class="uc-sol">해결: 파형 확인 → GND 연결 → Frame Grabber 보호 및 정상 구동</div>
+      </div>
+      <div class="uc-card" style="border-top:2px solid var(--green);">
+        <div class="uc-industry">2차전지 · Case B</div>
+        <div class="uc-title">노칭 공정 미가동 상태 트리거 발생</div>
+        <div class="uc-prob">문제: GND 미연결로 A, B상에 지속적 노이즈 발생</div>
+        <div class="uc-sol">해결: 파형 분석 → 트리거 박스 내 케이블 이상 확인 → 케이블 교체</div>
+      </div>
+      <div class="uc-card" style="border-top:2px solid rgba(0,200,83,0.4);">
+        <div class="uc-industry">자동차 · Case D</div>
+        <div class="uc-title">컨베이어 부품 검사 타이밍 촬영 불가</div>
+        <div class="uc-prob">문제: 엔코더 A상만 연결 가능한 구조적 한계</div>
+        <div class="uc-sol">해결: RS-422 신호 분석 → 가상 엔코더 트리거 생성으로 즉시 해결</div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bdr);border:1px solid var(--bdr);border-top:none;">
+
+      <div style="background:#080d0b;display:flex;flex-direction:column;justify-content:center;padding:22px 28px;gap:0;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;color:rgba(0,200,83,0.5);margin-bottom:20px;text-transform:uppercase;">해결 사례 유형 분류</div>
+
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="display:inline-block;width:8px;height:8px;background:#00C853;border-radius:2px;flex-shrink:0;"></span>
+              <span style="font-size:15px;font-weight:700;color:#fff;">노이즈 문제</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(0,200,83,0.55);letter-spacing:0.1em;">GND미연결·케이블불량</span>
+            </div>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:#00C853;line-height:1;">10<span style="font-size:16px;color:rgba(0,200,83,0.7);">+</span></span>
+          </div>
+          <div style="height:10px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+            <div style="width:67%;height:100%;background:linear-gradient(90deg,#00C853,rgba(0,200,83,0.35));border-radius:2px;"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="display:inline-block;width:8px;height:8px;background:rgba(0,200,83,0.6);border-radius:2px;flex-shrink:0;"></span>
+              <span style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.85);">시스템 개선</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(0,200,83,0.42);letter-spacing:0.1em;">트리거설정·파라미터</span>
+            </div>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:rgba(0,200,83,0.75);line-height:1;">2</span>
+          </div>
+          <div style="height:10px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+            <div style="width:20%;height:100%;background:linear-gradient(90deg,rgba(0,200,83,0.7),rgba(0,200,83,0.2));border-radius:2px;"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="display:inline-block;width:8px;height:8px;background:rgba(0,200,83,0.42);border-radius:2px;flex-shrink:0;"></span>
+              <span style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.7);">스펙 미달</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(0,200,83,0.32);letter-spacing:0.1em;">엔코더구조·신호방식</span>
+            </div>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:rgba(0,200,83,0.55);line-height:1;">2</span>
+          </div>
+          <div style="height:10px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+            <div style="width:13%;height:100%;background:linear-gradient(90deg,rgba(0,200,83,0.5),rgba(0,200,83,0.15));border-radius:2px;"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="display:inline-block;width:8px;height:8px;background:rgba(0,200,83,0.25);border-radius:2px;flex-shrink:0;"></span>
+              <span style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.55);">셋업 미스</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(0,200,83,0.22);letter-spacing:0.1em;">배선순서·초기화오류</span>
+            </div>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:rgba(0,200,83,0.38);line-height:1;">1</span>
+          </div>
+          <div style="height:10px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+            <div style="width:7%;height:100%;background:linear-gradient(90deg,rgba(0,200,83,0.35),rgba(0,200,83,0.1));border-radius:2px;"></div>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid rgba(0,200,83,0.15);padding-top:14px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.15em;">TOTAL CASES</span>
+          <div style="display:flex;align-items:baseline;gap:4px;">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#00C853;line-height:1;">15</span>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:rgba(0,200,83,0.6);line-height:1;">+</span>
+            <span style="font-size:11px;color:rgba(255,255,255,0.35);margin-left:4px;">해결 완료</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#0A1A0F;display:flex;flex-direction:column;justify-content:center;padding:20px 32px;gap:0;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bdr);border:1px solid var(--bdr);margin-bottom:14px;">
+          <div style="background:#0A1A0F;padding:20px 24px;text-align:center;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:64px;color:#00C853;line-height:1;letter-spacing:0.02em;">15<span style="font-size:36px;color:rgba(0,200,83,0.6);">+</span></div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.55);margin-top:4px;font-weight:600;">다양한 해결 사례</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(0,200,83,0.45);margin-top:3px;">산업 전반의 문제 해결 경험</div>
+          </div>
+          <div style="background:#0A1A0F;padding:20px 24px;text-align:center;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:64px;color:#00C853;line-height:1;letter-spacing:0.02em;">4<span style="font-size:36px;color:rgba(0,200,83,0.6);">H</span></div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.55);margin-top:4px;font-weight:600;">신속한 문제 해결</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(0,200,83,0.45);margin-top:3px;">평균 4시간 이내 소요</div>
+          </div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.18em;color:rgba(0,200,83,0.45);margin-bottom:10px;text-transform:uppercase;">적용 산업</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <span style="padding:5px 12px;border:1px solid rgba(0,200,83,0.2);background:rgba(0,200,83,0.05);font-size:11px;color:rgba(255,255,255,0.65);font-family:monospace;">반도체</span>
+          <span style="padding:5px 12px;border:1px solid rgba(0,200,83,0.2);background:rgba(0,200,83,0.05);font-size:11px;color:rgba(255,255,255,0.65);font-family:monospace;">2차전지</span>
+          <span style="padding:5px 12px;border:1px solid rgba(0,200,83,0.2);background:rgba(0,200,83,0.05);font-size:11px;color:rgba(255,255,255,0.65);font-family:monospace;">자동차</span>
+          <span style="padding:5px 12px;border:1px solid rgba(0,200,83,0.2);background:rgba(0,200,83,0.05);font-size:11px;color:rgba(255,255,255,0.65);font-family:monospace;">디스플레이</span>
+          <span style="padding:5px 12px;border:1px solid rgba(0,200,83,0.2);background:rgba(0,200,83,0.05);font-size:11px;color:rgba(255,255,255,0.65);font-family:monospace;">방산</span>
+          <span style="padding:5px 12px;border:1px solid rgba(0,200,83,0.2);background:rgba(0,200,83,0.05);font-size:11px;color:rgba(255,255,255,0.65);font-family:monospace;">바이오</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S7: PROCESS -->
+<div class="slide" id="s7">
+  <div class="slide-topbar"></div>
+  <div class="slide-inner" style="padding:20px 40px 20px;overflow:hidden;gap:0;">
+    <div style="margin-bottom:12px;flex-shrink:0;">
+      <span class="part-label">Part 06 — How It Works</span>
+      <h2 class="slide-title" style="margin-bottom:2px;">도입 <em>프로세스</em></h2>
+      <p class="slide-subtitle" style="margin-bottom:0;">기존 배선 변경 없이 병렬 연결 — 설치 30분, 파형 즉시 확인</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr);flex-shrink:0;">
+      <div style="background:var(--panel);padding:18px 16px 14px;display:flex;flex-direction:column;gap:6px;position:relative;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:rgba(0,200,83,0.15);line-height:1;margin-bottom:2px;">01</div>
+        <div style="font-size:22px;font-weight:700;color:var(--white);">연결</div>
+        <p style="font-size:12px;color:var(--text);line-height:1.65;flex:1;">기존 배선에 Signal Scope 병렬 연결. LAN 케이블 한 줄로 PC 연결.</p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);opacity:0.75;border-top:1px solid rgba(0,200,83,0.2);padding-top:8px;">설치 &lt; 30분</div>
+        <div style="position:absolute;right:-10px;top:50%;transform:translateY(-50%);width:20px;height:20px;background:var(--bg);border:1px solid var(--bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--green);z-index:2;">→</div>
+      </div>
+      <div style="background:var(--panel);padding:18px 16px 14px;display:flex;flex-direction:column;gap:6px;position:relative;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:rgba(0,200,83,0.15);line-height:1;margin-bottom:2px;">02</div>
+        <div style="font-size:22px;font-weight:700;color:var(--white);">캡처</div>
+        <p style="font-size:12px;color:var(--text);line-height:1.65;flex:1;">TAG_Signal_Viewer 실행. Connect → Triggering으로 파형 캡처.</p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);opacity:0.75;border-top:1px solid rgba(0,200,83,0.2);padding-top:8px;">1Gbps 실시간</div>
+        <div style="position:absolute;right:-10px;top:50%;transform:translateY(-50%);width:20px;height:20px;background:var(--bg);border:1px solid var(--bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--green);z-index:2;">→</div>
+      </div>
+      <div style="background:var(--panel);padding:18px 16px 14px;display:flex;flex-direction:column;gap:6px;position:relative;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:rgba(0,200,83,0.15);line-height:1;margin-bottom:2px;">03</div>
+        <div style="font-size:22px;font-weight:700;color:var(--white);">분석</div>
+        <p style="font-size:12px;color:var(--text);line-height:1.65;flex:1;">엔코더·트리거·I/O를 동일 시간축으로 비교. 이상 신호 즉각 식별.</p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);opacity:0.75;border-top:1px solid rgba(0,200,83,0.2);padding-top:8px;">.sscp 파일 공유</div>
+        <div style="position:absolute;right:-10px;top:50%;transform:translateY(-50%);width:20px;height:20px;background:var(--bg);border:1px solid var(--bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--green);z-index:2;">→</div>
+      </div>
+      <div style="background:var(--panel);padding:18px 16px 14px;display:flex;flex-direction:column;gap:6px;position:relative;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:rgba(0,200,83,0.15);line-height:1;margin-bottom:2px;">04</div>
+        <div style="font-size:22px;font-weight:700;color:var(--white);">해결</div>
+        <p style="font-size:12px;color:var(--text);line-height:1.65;flex:1;">배선·설정·장비 원인 4시간 이내 특정. .sscp 공유로 원격 협업.</p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);opacity:0.75;border-top:1px solid rgba(0,200,83,0.2);padding-top:8px;">평균 4H 이내</div>
+        <div style="position:absolute;right:-10px;top:50%;transform:translateY(-50%);width:20px;height:20px;background:var(--bg);border:1px solid var(--bdr);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--green);z-index:2;">→</div>
+      </div>
+      <div style="background:var(--panel);padding:18px 16px 14px;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:rgba(0,200,83,0.15);line-height:1;margin-bottom:2px;">05</div>
+        <div style="font-size:22px;font-weight:700;color:var(--white);">최적화</div>
+        <p style="font-size:12px;color:var(--text);line-height:1.65;flex:1;">ETIO로 교체 또는 상시 설치. 24/365 예지보전 구축.</p>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);opacity:0.75;border-top:1px solid rgba(0,200,83,0.2);padding-top:8px;">예지보전 전환</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bdr);border:1px solid var(--bdr);border-top:none;flex:1;min-height:0;">
+      <div style="background:#0d1117;padding:16px 20px 12px;display:flex;flex-direction:column;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;color:rgba(255,255,255,0.35);margin-bottom:10px;text-transform:uppercase;">BEFORE — 설치 전</div>
+        <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;flex:1;">
+          <defs><marker id="mw1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="rgba(255,255,255,0.3)"/></marker></defs>
+          <g stroke="rgba(255,255,255,0.25)" stroke-width="1.2" fill="rgba(255,255,255,0.04)">
+            <rect x="12" y="20" width="72" height="26" rx="4"/><rect x="12" y="58" width="72" height="26" rx="4"/>
+            <rect x="12" y="96" width="72" height="26" rx="4"/><rect x="12" y="134" width="72" height="26" rx="4"/>
+          </g>
+          <text x="48" y="37" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.6)" font-family="monospace">ENC 1</text>
+          <text x="48" y="75" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.6)" font-family="monospace">ENC 2</text>
+          <text x="48" y="113" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.6)" font-family="monospace">ENC 3</text>
+          <text x="48" y="151" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.6)" font-family="monospace">ENC 4</text>
+          <line x1="84" y1="33" x2="310" y2="85" stroke="#00C853" stroke-width="1.8" opacity="0.55"/>
+          <line x1="84" y1="71" x2="310" y2="88" stroke="#00C853" stroke-width="1.8" opacity="0.55"/>
+          <line x1="84" y1="109" x2="310" y2="91" stroke="#ff6b6b" stroke-width="1.8" opacity="0.55"/>
+          <line x1="84" y1="147" x2="310" y2="94" stroke="#ff6b6b" stroke-width="1.8" opacity="0.55"/>
+          <rect x="310" y="68" width="100" height="52" rx="5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.28)" stroke-width="1.5"/>
+          <text x="360" y="90" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.7)" font-family="sans-serif" font-weight="600">연결</text>
+          <text x="360" y="107" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.7)" font-family="sans-serif" font-weight="600">대상</text>
+          <text x="210" y="58" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.28)" font-family="monospace">직결</text>
+        </svg>
+      </div>
+      <div style="background:#0A1A0F;padding:16px 20px 12px;display:flex;flex-direction:column;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;color:rgba(0,200,83,0.6);margin-bottom:10px;text-transform:uppercase;">AFTER — 설치 후 Signal Scope 병렬 탭</div>
+        <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;flex:1;">
+          <defs>
+            <marker id="mg1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#00C853"/></marker>
+            <marker id="mr2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#ff6b6b"/></marker>
+          </defs>
+          <g stroke="rgba(255,255,255,0.22)" stroke-width="1.2" fill="rgba(255,255,255,0.04)">
+            <rect x="12" y="20" width="72" height="26" rx="4"/><rect x="12" y="58" width="72" height="26" rx="4"/>
+            <rect x="12" y="96" width="72" height="26" rx="4"/><rect x="12" y="134" width="72" height="26" rx="4"/>
+          </g>
+          <text x="48" y="37" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.55)" font-family="monospace">ENC 1</text>
+          <text x="48" y="75" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.55)" font-family="monospace">ENC 2</text>
+          <text x="48" y="113" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.55)" font-family="monospace">ENC 3</text>
+          <text x="48" y="151" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.55)" font-family="monospace">ENC 4</text>
+          <line x1="84" y1="33" x2="190" y2="62" stroke="#00C853" stroke-width="1.8" opacity="0.6"/>
+          <line x1="84" y1="71" x2="190" y2="70" stroke="#00C853" stroke-width="1.8" opacity="0.6"/>
+          <line x1="84" y1="109" x2="190" y2="78" stroke="#ff6b6b" stroke-width="1.8" opacity="0.6"/>
+          <line x1="84" y1="147" x2="190" y2="86" stroke="#ff6b6b" stroke-width="1.8" opacity="0.6"/>
+          <rect x="190" y="46" width="88" height="64" rx="5" fill="rgba(0,200,83,0.1)" stroke="#00C853" stroke-width="2"/>
+          <text x="234" y="70" text-anchor="middle" font-size="11" fill="#00C853" font-family="monospace" font-weight="700">Signal</text>
+          <text x="234" y="84" text-anchor="middle" font-size="11" fill="#00C853" font-family="monospace" font-weight="700">Scope</text>
+          <text x="234" y="102" text-anchor="middle" font-size="9" fill="rgba(0,200,83,0.5)" font-family="monospace">병렬 탭</text>
+          <line x1="234" y1="110" x2="234" y2="136" stroke="#00C853" stroke-width="1.8"/>
+          <rect x="196" y="137" width="76" height="22" rx="4" fill="rgba(0,200,83,0.08)" stroke="rgba(0,200,83,0.4)" stroke-width="1.2"/>
+          <text x="234" y="152" text-anchor="middle" font-size="10" fill="rgba(0,200,83,0.8)" font-family="monospace">PC / LAN</text>
+          <line x1="278" y1="62" x2="360" y2="68" stroke="#00C853" stroke-width="1.8" opacity="0.7"/>
+          <line x1="278" y1="68" x2="360" y2="74" stroke="#00C853" stroke-width="1.8" opacity="0.7"/>
+          <line x1="278" y1="82" x2="360" y2="80" stroke="#ff6b6b" stroke-width="1.8" opacity="0.7"/>
+          <line x1="278" y1="88" x2="360" y2="86" stroke="#ff6b6b" stroke-width="1.8" opacity="0.7"/>
+          <rect x="360" y="56" width="100" height="56" rx="5" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.28)" stroke-width="1.5"/>
+          <text x="410" y="82" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.75)" font-family="sans-serif" font-weight="700">연결</text>
+          <text x="410" y="99" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.75)" font-family="sans-serif" font-weight="700">대상</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- S7: CLOSING -->
+<div class="slide" id="s8">
+  <div class="slide-topbar"></div>
+  <div class="slide-inner" style="justify-content:center;align-items:center;text-align:center;">
+    <p class="closing-pre">신호가 보이지 않으면, 문제도 보이지 않습니다.</p>
+    <h2 class="closing-title">신호를 보면<br><em>답이 보입니다</em></h2>
+    <p class="closing-sub">Signal Scope — 현장 환경 분석부터 셋업 검증, 데이터 로깅까지<br>기술 전문가가 직접 지원합니다.</p>
+    <div class="closing-contact">
+      <div class="contact-row">
+        <span class="ct">TEL</span>
+        <a href="tel:+82704120777" class="cv cv-link">+82.70.4120.7771</a>
+      </div>
+      <div class="contact-row">
+        <span class="ct">EMAIL</span>
+        <a href="mailto:Sales@araelectronics.com" class="cv cv-link">Sales@araelectronics.com</a>
+        <a href="mailto:Sales@araelectronics.com" class="contact-btn">이메일 보내기 →</a>
+      </div>
+      <div class="contact-row">
+        <span class="ct">HOMEPAGE</span>
+        <a href="https://www.araelectronics.com" target="_blank" class="cv cv-link">www.araelectronics.com</a>
+        <a href="https://www.araelectronics.com" target="_blank" class="contact-btn contact-btn-dim">홈페이지 방문 →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- BOTTOM NAV -->
+<div class="nav">
+  <button class="nav-btn" id="prev">&#8249;</button>
+  <div id="dots" style="display:flex;gap:8px;align-items:center;"></div>
+  <button class="nav-btn" id="next">&#8250;</button>
+  <span class="slide-counter" id="counter">1 / 8</span>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const dotsEl = document.getElementById('dots');
+const counter = document.getElementById('counter');
+const topNavItems = document.getElementById('topNavItems');
+let cur = 0;
+let animating = false;
+
+const TABS = [
+  {num:'00', label:'Cover'},
+  {num:'01', label:'Problem'},
+  {num:'02', label:'Solution'},
+  {num:'03', label:'Comparison'},
+  {num:'04', label:'Performance'},
+  {num:'05', label:'Field Cases'},
+  {num:'06', label:'Process'},
+  {num:'07', label:'Contact'},
+];
+
+const navTabs = [];
+TABS.forEach(function(t, i) {
+  var btn = document.createElement('button');
+  btn.className = 'nav-tab' + (i === 0 ? ' active' : '');
+  btn.innerHTML = '<span class="tab-num">' + t.num + '</span>' + t.label;
+  btn.addEventListener('click', function() { go(i); });
+  topNavItems.appendChild(btn);
+  navTabs.push(btn);
+});
+
+slides.forEach(function(_, i) {
+  var d = document.createElement('div');
+  d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  d.addEventListener('click', function() { go(i); });
+  dotsEl.appendChild(d);
+});
+
+/* 초기 상태: 첫 슬라이드만 표시 */
+slides[0].classList.add('active');
+
+function go(n) {
+  if (animating || n === cur) return;
+  animating = true;
+
+  var prev = cur;
+  cur = ((n % slides.length) + slides.length) % slides.length;
+
+  /* 현재 슬라이드 exit */
+  slides[prev].classList.add('exit');
+  slides[prev].classList.remove('active');
+
+  /* 새 슬라이드 진입 방향 설정 */
+  var dir = cur > prev ? 1 : -1;
+  slides[cur].style.transform = 'translateX(' + (dir * 24) + 'px)';
+  slides[cur].style.opacity = '0';
+  slides[cur].classList.add('active');
+
+  /* 다음 프레임에서 전환 시작 */
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      slides[cur].style.transform = '';
+      slides[cur].style.opacity = '';
+      setTimeout(function() {
+        slides[prev].classList.remove('exit');
+        animating = false;
+      }, 320);
+    });
+  });
+
+  /* dot / tab / counter 업데이트 */
+  document.querySelectorAll('.nav-dot').forEach(function(d, i) {
+    d.classList.toggle('active', i === cur);
+  });
+  navTabs.forEach(function(t, i) {
+    t.classList.toggle('active', i === cur);
+  });
+  if (navTabs[cur]) {
+    navTabs[cur].scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+  }
+  counter.textContent = (cur + 1) + ' / ' + slides.length;
+}
+
+document.getElementById('prev').addEventListener('click', function() { go(cur - 1); });
+document.getElementById('next').addEventListener('click', function() { go(cur + 1); });
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(cur + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(cur - 1);
+});
+
+/* 초기 카운터 */
+counter.textContent = '1 / ' + slides.length;
+</script>
+<!-- ══ SHOOTING STAR CANVAS ══ -->
+<canvas id="star-canvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9997;"></canvas>
+<script>
+(function(){
+  var cv=document.getElementById('star-canvas');
+  var ctx=cv.getContext('2d');
+  var W,H,stars=[],bgStars=[];
+  function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;initBgStars();}
+  window.addEventListener('resize',resize);resize();
+  function rnd(a,b){return a+Math.random()*(b-a);}
+
+  /* ── 배경 별 (고정 반짝임) ── */
+  function initBgStars(){
+    bgStars=[];
+    for(var i=0;i<120;i++){
+      bgStars.push({
+        x:rnd(0,W), y:rnd(0,H),
+        r:rnd(0.3,1.4),
+        alpha:rnd(0.2,0.7),
+        blinkSpeed:rnd(0.008,0.03),
+        blinkOff:rnd(0,Math.PI*2),
+        col:Math.random()>.15 ? '255,255,255' : (Math.random()>.5 ? '200,230,255' : '255,240,180'),
+        t:rnd(0,1000)
+      });
+    }
+  }
+
+  /* ── 별똥별 ── */
+  function makeStar(){
+    var angle = rnd(25,55) * Math.PI/180;  /* 대각선 25~55도 */
+    var speed = rnd(10,22);
+    var len   = rnd(90,220);
+    /* 화면 상단 또는 좌측 랜덤 진입 */
+    var startX = Math.random()>.4 ? rnd(W*0.05, W*0.95) : rnd(-60, W*0.3);
+    var startY = Math.random()>.4 ? rnd(-60, H*0.3)     : rnd(0, H*0.4);
+    return{
+      x:startX, y:startY,
+      vx: Math.cos(angle)*speed,
+      vy: Math.sin(angle)*speed,
+      len:len,
+      life:1.0,          /* 1→0 페이드 */
+      decay:rnd(0.014,0.028),
+      width:rnd(1.2,2.4),
+      col: Math.random()>.2 ? '255,255,255' : (Math.random()>.5 ? '180,220,255' : '255,250,200'),
+      active:false,
+      delay:rnd(0,0)     /* 즉시 활성 */
+    };
+  }
+
+  /* 별똥별 스케줄러 — 불규칙 간격으로 생성 */
+  var lastSpawn=0;
+  var nextInterval=rnd(900,2800); /* ms */
+  function spawnIfReady(now){
+    if(now-lastSpawn > nextInterval){
+      /* 한 번에 1~2개 */
+      var count = Math.random()>.75 ? 2 : 1;
+      for(var i=0;i<count;i++){
+        var s=makeStar();
+        s.active=true;
+        /* 2개일 때 두 번째는 살짝 딜레이 */
+        if(i===1) s._startDelay = rnd(80,300);
+        else s._startDelay=0;
+        s._spawnTime=now;
+        stars.push(s);
+      }
+      lastSpawn=now;
+      nextInterval=rnd(900,3200);
+    }
+  }
+
+  function drawBgStars(){
+    bgStars.forEach(function(s){
+      s.t+=0.016;
+      var a=s.alpha*(0.5+0.5*Math.sin(s.t*s.blinkSpeed*100+s.blinkOff));
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle='rgba('+s.col+','+a+')';
+      ctx.fill();
+    });
+  }
+
+  function drawShootingStar(s){
+    if(s.life<=0) return;
+    /* 꼬리 — 선형 그라디언트 */
+    var tx=s.x - Math.cos(Math.atan2(s.vy,s.vx))*s.len*s.life;
+    var ty=s.y - Math.sin(Math.atan2(s.vy,s.vx))*s.len*s.life;
+    var grd=ctx.createLinearGradient(tx,ty,s.x,s.y);
+    grd.addColorStop(0,'rgba('+s.col+',0)');
+    grd.addColorStop(0.6,'rgba('+s.col+','+(s.life*0.3)+')');
+    grd.addColorStop(1,'rgba('+s.col+','+(s.life*0.95)+')');
+    ctx.beginPath();
+    ctx.moveTo(tx,ty);
+    ctx.lineTo(s.x,s.y);
+    ctx.strokeStyle=grd;
+    ctx.lineWidth=s.width*s.life;
+    ctx.lineCap='round';
+    ctx.stroke();
+    /* 머리 글로우 */
+    var gr=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,s.width*4);
+    gr.addColorStop(0,'rgba('+s.col+','+(s.life*0.9)+')');
+    gr.addColorStop(1,'rgba('+s.col+',0)');
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.width*4,0,Math.PI*2);
+    ctx.fillStyle=gr;
+    ctx.fill();
+  }
+
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    var now=performance.now();
+    spawnIfReady(now);
+    drawBgStars();
+    /* 별똥별 업데이트 */
+    stars=stars.filter(function(s){
+      if(now-s._spawnTime < (s._startDelay||0)) return true; /* 딜레이 대기 */
+      s.x+=s.vx;
+      s.y+=s.vy;
+      s.life-=s.decay;
+      drawShootingStar(s);
+      return s.life>0 && s.x<W+100 && s.y<H+100;
+    });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+</script>
+
+</body>
+</html>
