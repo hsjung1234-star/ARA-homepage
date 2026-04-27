@@ -349,21 +349,127 @@
                     ]
                 }
             },
-
-];
-        // Company page shows cables + automation peripherals as handled items
-        const companyProductData = [
-          ...productData.map(p => ({ id: p.id, name: p.name })),
-          { id: "etio", name: "ETIO" },
-          { id: "etl", name: "ETL" },
-          { id: "signal-scope", name: "SIGNAL SCOPE" },
-          { id: "tagger", name: "TAGGER" },
+            {
+                id: 'nsync',
+                name: 'NSync',
+                image: './ara_site_assets/nsync.jpg?v=20260422',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=NSync',
+                desc: '조명 밝기 90% 골든타임 피드백 제어 시스템',
+                details: {
+                    connector: '다중 제어 인터페이스',
+                    spec: '100ns 초정밀 응답',
+                    shell: '산업용 메탈 케이스',
+                    foldingTime: '내구성 검증 완료',
+                    features: [
+                        'Closed-Loop 스트로브 제어',
+                        '100ns 초정밀 응답속도',
+                        '조명 열화 진단 및 예지 보전 기능'
+                    ],
+                    application: '반도체, 2차전지, 머신비전 전반',
+                    customized: [
+                        '장비 환경 맞춤 세팅',
+                        '시스템 연동 기술 지원'
+                    ]
+                }
+            },
+            {
+                id: 'scp-3d',
+                name: 'SCP-3D',
+                image: './ara_site_assets/scp3d.jpg?v=20260422',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=SCP-3D',
+                desc: '2D/3D 통합 동기화 트리거 컨트롤러',
+                details: {
+                    connector: 'DSub 15pin 등 단일 케이블',
+                    spec: 'Zero Jitter 10ns 정밀도',
+                    shell: '산업용 메탈 케이스',
+                    foldingTime: '내구성 검증 완료',
+                    features: [
+                        '2D 라인스캔 및 3D 스캐너 완벽 동기화',
+                        '하드웨어 레벨 Backlash 실시간 보정',
+                        '전 채널 Galvanic Isolation 보호'
+                    ],
+                    application: 'SmartRay, Micro-epsilon 등 주요 3D 스캐너',
+                    customized: [
+                        '현장 환경 맞춤 구성',
+                        '단일 케이블 배선 구성 제안'
+                    ]
+                }
+            },
+            {
+                id: 'signal-scope',
+                name: 'SIGNAL SCOPE',
+                image: './ara_site_assets/signal_scope.jpg?v=20260223',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=SIGNAL+SCOPE',
+                desc: '신호 품질 분석 및 검증을 위한 측정/분석 솔루션',
+                details: {
+                    connector: 'PC 직접 연결 (LAN)',
+                    spec: '10ns 분해능, 1Gbps 통신',
+                    shell: '산업용 메탈 케이스',
+                    foldingTime: '내구성 검증 완료',
+                    features: [
+                        '장비 내장형 실시간 오실로스코프',
+                        '간헐적 Frame Drop 원인 즉시 파악',
+                        '24시간 연속 로깅 및 이력 분석'
+                    ],
+                    application: '트러블슈팅 및 예지 보전이 필요한 모든 장비',
+                    customized: [
+                        '진단 환경 컨설팅',
+                        '신호 분석 기술 지원'
+                    ]
+                }
+            },
+            {
+                id: 'tagger',
+                name: 'TAGGER',
+                image: './ara_site_assets/tagger.jpg?v=20260223',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=TAGGER',
+                desc: '추적/태깅 기반의 데이터 연계 및 관리 솔루션',
+                details: {
+                    connector: '네트워크 연동',
+                    spec: '실시간 데이터 매칭',
+                    shell: '소프트웨어 / 통합 시스템',
+                    foldingTime: '내구성 검증 완료',
+                    features: [
+                        '운영 환경에 맞는 적용 컨설팅',
+                        '시스템 연동 및 초기 세팅 지원',
+                        '데이터 무결성 검증 및 유지관리'
+                    ],
+                    application: '스마트 팩토리, 물류, 검사 데이터 추적',
+                    customized: [
+                        '기존 시스템 맞춤 연동 개발',
+                        '커스텀 태깅 로직 적용'
+                    ]
+                }
+            },
+            {
+                id: 'etio',
+                name: 'ETIO',
+                image: './ara_site_assets/etio.jpg?v=20260223',
+                fallbackImage: 'https://placehold.co/600x400/2563eb/white?text=ETIO',
+                desc: '현장 I/O 인터페이스 및 고속 트리거 제어 솔루션',
+                details: {
+                    connector: 'I/O 단자대, 통신 케이블',
+                    spec: '1µs Latency, 100ns Jitter',
+                    shell: '산업용 메탈 케이스',
+                    foldingTime: '내구성 검증 완료',
+                    features: [
+                        '트리거 분배 및 I/O 카드 단일 통합',
+                        'Working Area 특허 기반 오검출 차단',
+                        'EEPROM 비휘발성 메모리 탑재로 빠른 복구'
+                    ],
+                    application: '2차전지, 반도체, 디스플레이 고속 검사 라인',
+                    customized: [
+                        '라인업에 따른 맞춤 모델(2444, 2888, SEQ) 제안',
+                        '현장 배선 최적화 컨설팅'
+                    ]
+                }
+            }
         ];
 
+        // Company page shows cables + automation peripherals as handled items
+        const companyProductData = productData.map(p => ({ id: p.id, name: p.name }));
 
         // --- Product Menu (Top Tree) ---
-        // NOTE: 케이블은 기존 productData(제품 상세 페이지 연결) 유지
-        // 산업용 마킹기 / 자동화 주변기기는 현재 메뉴 트리만 구성 (상세 페이지는 추후 추가)
         const markingMenu = [
             { id: 'cij', name: '잉크젯마킹기(CIJ)' },
             { id: 'laser', name: '레이저마킹기(Laser)' },
@@ -373,10 +479,11 @@
         ];
 
         const automationMenu = [
-            { id: 'etio', name: 'ETIO' },
-            { id: 'etl', name: 'ETL' },
+            { id: 'nsync', name: 'NSync' },
+            { id: 'scp-3d', name: 'SCP-3D' },
             { id: 'signal-scope', name: 'SIGNAL SCOPE' },
             { id: 'tagger', name: 'TAGGER' },
+            { id: 'etio', name: 'ETIO' },
         ];
 
         // --- Main App Component ---
@@ -431,18 +538,12 @@
 
             const HomeView = () => (
                 <div className="animate-fade-in">
-                    {/* Hero Section (Rolling Background) */}
                     <section className="relative min-h-[85vh] md:min-h-[92vh] lg:min-h-screen flex items-center text-white overflow-hidden hero-pattern">
-                        {/* Background Image */}
                         <div
                           className="absolute inset-0 bg-cover bg-center transition-opacity duration-700"
                           style={{ backgroundImage: `url(${heroImages[heroIndex]})` }}
                         />
-
-                        {/* Overlay (keep tone similar to original) */}
                         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-
-                        {/* Slide Dots (B2S-style) */}
                         <div className="absolute left-6 md:left-10 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-3">
                           {heroImages.map((_, i) => (
                             <button
@@ -454,8 +555,6 @@
                             />
                           ))}
                         </div>
-
-                        {/* Content */}
                         <div className="relative z-20 w-full h-full flex items-center">
                           <div className="w-full px-6 md:px-16 lg:px-24">
                             <div className="max-w-3xl text-left">
@@ -476,7 +575,7 @@
                                   제품정보 보기
                                 </button>
                                 <button
-                                  onClick={() => navigateTo('custom')}
+                                  onClick={() => navigateTo('contact')}
                                   className="bg-white/10 hover:bg-white/20 border border-white/30 px-6 py-3 rounded-full font-semibold transition"
                                 >
                                   커스텀제작 문의
@@ -486,8 +585,6 @@
                           </div>
                         </div>
                     </section>
-
-                    {/* Features Grid */}
                     <section className="py-20 bg-gray-50">
                         <div className="container mx-auto px-4">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -526,7 +623,6 @@
                                 <h2 className="text-3xl font-bold text-gray-900 mb-4">회사 소개</h2>
                                 <div className="w-20 h-1 bg-blue-600 mx-auto"></div>
                             </div>
-
                             <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
                                 <div>
                                     <img 
@@ -539,11 +635,10 @@
                                     <h3 className="text-2xl font-bold text-blue-900">Industrial Connectivity & Automation Solutions Partner</h3>
                                     <p>ARA Electronic Technology Co., Ltd.는 2015년 한국에 설립되어 산업용 케이블의 개발·제조를 전문으로 해왔습니다.</p>
                                     <p>ARA의 주요 제품으로는 산업용 로봇 케이블, 산업용 카메라 케이블, 서보 모터 케이블, 산업 현장용 통신 및 제어 케이블이 있으며, 산업 자동화, 기계 장비, 로봇, 서보 시스템, CNC, 통신 서비스 등 다양한 분야에 널리 사용되고 있습니다.</p>
-                                    <p>또한 ETIO, ETL, SIGNAL SCOPE, TAGGER 등 현장 적용에 필요한 장비/솔루션도 함께 공급하며, 도입 컨설팅부터 설치·세팅, 트러블슈팅까지 기술지원 및 맞춤형 솔루션 제공이 가능합니다.</p>
+                                    <p>또한 ETIO, NSync, SCP-3D, SIGNAL SCOPE 등 현장 적용에 필요한 장비/솔루션도 함께 공급하며, 도입 컨설팅부터 설치·세팅, 트러블슈팅까지 기술지원 및 맞춤형 솔루션 제공이 가능합니다.</p>
                                     <p>고객의 제품이 최고의 성능을 발휘할 수 있도록, 더 신뢰할 수 있는 연결 솔루션과 빠른 현장 대응으로 지속적으로 지원하겠습니다.</p>
                                 </div>
                             </div>
-
                             <div className="bg-gray-50 p-8 rounded-xl border border-gray-200">
                                 <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">주요 취급 품목</h3>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -563,8 +658,6 @@
             // --- REDESIGNED PRODUCT VIEW (With Sticky Nav) ---
             const ProductView = () => (
                 <div className="animate-fade-in pt-0 lg:pt-24 pb-20 bg-dot-pattern min-h-screen">
-
-                    {/* MOBILE STICKY MENU: Always Visible on small screens */}
                     <div className="lg:hidden sticky top-[60px] z-30 bg-white/95 backdrop-blur-sm border-b border-gray-200 overflow-x-auto no-scrollbar whitespace-nowrap py-3 px-4 shadow-md transition-all">
                         <div className="flex space-x-2">
                         {companyProductData.map(product => {
@@ -573,7 +666,8 @@
                                 <button
                                     key={product.id}
                                     onClick={() => {
-                                        setSelectedProduct(product);
+                                        const targetProduct = productData.find(p => p.id === product.id) || productData[0];
+                                        setSelectedProduct(targetProduct);
                                         window.scrollTo({ top: 0, behavior: 'smooth' });
                                     }}
                                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
@@ -591,9 +685,6 @@
 
                     <div className="container mx-auto px-4 mt-8 lg:mt-0">
                         <div className="flex flex-col lg:flex-row gap-8 items-start relative">
-
-                            {/* Modern Sidebar (Desktop: Sticky) */}
-                            {/* lg:block ensures it's hidden on mobile (since we use the top bar) and shown on desktop */}
                             <div className="hidden lg:block w-72 flex-shrink-0 sticky top-24 z-10 h-screen overflow-y-auto no-scrollbar pb-20">
                                 <div className="glass-panel rounded-2xl p-6 shadow-lg shadow-blue-900/5">
                                     <h3 className="font-bold text-gray-400 text-xs uppercase tracking-wider mb-4 px-2">Products Lineup</h3>
@@ -620,8 +711,6 @@
                                             );
                                         })}
                                     </ul>
-
-                                    {/* Contact Banner in Sidebar */}
                                     <div className="mt-8 p-4 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl text-white text-center">
                                         <p className="text-xs text-slate-400 mb-2">원하는 사양이 없으신가요?</p>
                                         <p className="font-bold text-sm mb-3">커스텀 제작이 가능합니다</p>
@@ -635,220 +724,257 @@
                                 </div>
                             </div>
 
-                            {/* Main Content Area */}
                             <div className="flex-1 min-w-0 pb-20">
-                                {/* Header Section */}
-                                <div className="mb-8 pt-4 lg:pt-0">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wide">Industrial Grade</span>
-                                        <span className="text-gray-400 text-xs">Model: {selectedProduct.id.toUpperCase()}</span>
-                                    </div>
-                                    <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4 tracking-tight">{selectedProduct.name}</h2>
-                                    <p className="text-lg text-slate-600 max-w-2xl leading-relaxed">{selectedProduct.desc}</p>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                    {/* Image Card */}
-                                    <div className="glass-panel rounded-3xl p-2 shadow-xl shadow-slate-200/50 md:col-span-2 lg:col-span-1 min-h-[400px] flex items-center justify-center bg-white relative overflow-hidden group">
-                                        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                        <img 
-                                            src={selectedProduct.image} 
-                                            alt={selectedProduct.name} 
-                                            onError={(e) => {
-                                                e.target.onerror = null; 
-                                                e.target.src = selectedProduct.fallbackImage;
-                                            }}
-                                            className="w-full h-full object-contain relative z-10 transform group-hover:scale-105 transition-transform duration-500"
+                                {['nsync', 'scp-3d', 'signal-scope', 'tagger', 'etio'].includes(selectedProduct.id) ? (
+                                    <div className="w-full h-[calc(100vh-120px)] min-h-[700px] rounded-3xl overflow-hidden shadow-xl border border-slate-200/60 bg-black relative">
+                                        <iframe 
+                                            src={`./${selectedProduct.id === 'nsync' ? 'NSync' : selectedProduct.id === 'scp-3d' ? 'SCP-3D' : selectedProduct.id === 'signal-scope' ? 'SIGNAL SCOPE' : selectedProduct.id === 'tagger' ? 'TAGGER' : 'ETIO'}.html`} 
+                                            className="w-full h-full border-0"
+                                            title={selectedProduct.name}
                                         />
                                     </div>
-
-                                    {/* Key Specs Card (Bento Grid Style) */}
-                                    <div className="grid grid-cols-1 gap-4 content-start">
-                                        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-                                            <h3 className="text-slate-400 text-xs font-bold uppercase mb-4 flex items-center gap-2">
-                                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div> Specifications
-                                            </h3>
-                                            <div className="space-y-4">
-                                                <div>
-                                                    <div className="text-xs text-gray-400 mb-1">Connector Type</div>
-                                                    <div className="font-semibold text-slate-800 break-words">{selectedProduct.details.connector}</div>
-                                                </div>
-                                                <div className="h-px bg-slate-100"></div>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <div className="text-xs text-gray-400 mb-1">Wire Spec</div>
-                                                        <div className="font-medium text-slate-700">{selectedProduct.details.spec}</div>
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-xs text-gray-400 mb-1">Material</div>
-                                                        <div className="font-medium text-slate-700">{selectedProduct.details.shell}</div>
-                                                    </div>
-                                                </div>
+                                ) : (
+                                    <>
+                                        <div className="mb-8 pt-4 lg:pt-0">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wide">Industrial Grade</span>
+                                                <span className="text-gray-400 text-xs">Model: {selectedProduct.id.toUpperCase()}</span>
                                             </div>
+                                            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4 tracking-tight">{selectedProduct.name}</h2>
+                                            <p className="text-lg text-slate-600 max-w-2xl leading-relaxed">{selectedProduct.desc}</p>
                                         </div>
-
-                                        {/* Durability Highlight */}
-                                        <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 shadow-lg shadow-blue-900/20 text-white flex flex-col justify-center relative overflow-hidden">
-                                            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl"></div>
-                                            <div className="relative z-10">
-                                                <div className="text-blue-100 text-xs font-bold uppercase mb-1">Bending Test</div>
-                                                <div className="text-3xl font-bold tracking-tight">{selectedProduct.details.foldingTime}</div>
-                                                <div className="text-blue-200 text-xs mt-1">Extreme durability guaranteed</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Features & Applications Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                                    {/* Features */}
-                                    <div className="md:col-span-2 bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
-                                        <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
-                                            <CheckCircle className="text-blue-600" size={20} />
-                                            Key Features
-                                        </h3>
-                                        <div className="grid sm:grid-cols-2 gap-4">
-                                            {selectedProduct.details.features.map((feature, idx) => (
-                                                <div key={idx} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors">
-                                                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                                                    <span className="text-sm text-slate-600 leading-relaxed">{feature}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-
-
-                                        {selectedProduct.details.featureImage && (
-                                            <div className="mt-8">
-                                                <img
-                                                    src={selectedProduct.details.featureImage}
-                                                    alt={`${selectedProduct.name} 상세 이미지`}
-                                                    className="w-full rounded-xl border border-slate-100 shadow-sm"
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                            <div className="glass-panel rounded-3xl p-2 shadow-xl shadow-slate-200/50 md:col-span-2 lg:col-span-1 min-h-[400px] flex items-center justify-center bg-white relative overflow-hidden group">
+                                                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                                <img 
+                                                    src={selectedProduct.image} 
+                                                    alt={selectedProduct.name} 
+                                                    onError={(e) => {
+                                                        e.target.onerror = null; 
+                                                        e.target.src = selectedProduct.fallbackImage;
+                                                    }}
+                                                    className="w-full h-full object-contain relative z-10 transform group-hover:scale-105 transition-transform duration-500"
                                                 />
                                             </div>
-                                        )}
-                                    </div>
-
-                                    {/* Customization & Applications */}
-                                    <div className="space-y-6">
-                                        {/* Custom Options */}
-                                        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200/60">
-                                            <h3 className="font-bold text-slate-800 mb-4 text-sm">Custom Options</h3>
-                                            <ul className="space-y-3">
-                                                {selectedProduct.details.customized.map((item, idx) => (
-                                                    <li key={idx} className="text-sm text-slate-600 flex items-center gap-2">
-                                                        <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
-                                                        {item}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-
-                                        {/* Compatible Brands */}
-                                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-                                            <h3 className="font-bold text-slate-800 mb-4 text-sm">Compatible With</h3>
-                                            <div className="flex flex-wrap gap-2">
-                                                {selectedProduct.details.application.split(',').map((brand, idx) => (
-                                                    <span key={idx} className="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded-full font-medium border border-slate-200">
-                                                        {brand.trim()}
-                                                    </span>
-                                                ))}
+                                            <div className="grid grid-cols-1 gap-4 content-start">
+                                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                                                    <h3 className="text-slate-400 text-xs font-bold uppercase mb-4 flex items-center gap-2">
+                                                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div> Specifications
+                                                    </h3>
+                                                    <div className="space-y-4">
+                                                        <div>
+                                                            <div className="text-xs text-gray-400 mb-1">Connector Type</div>
+                                                            <div className="font-semibold text-slate-800 break-words">{selectedProduct.details.connector}</div>
+                                                        </div>
+                                                        <div className="h-px bg-slate-100"></div>
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div>
+                                                                <div className="text-xs text-gray-400 mb-1">Wire Spec</div>
+                                                                <div className="font-medium text-slate-700">{selectedProduct.details.spec}</div>
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-xs text-gray-400 mb-1">Material</div>
+                                                                <div className="font-medium text-slate-700">{selectedProduct.details.shell}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 shadow-lg shadow-blue-900/20 text-white flex flex-col justify-center relative overflow-hidden">
+                                                    <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl"></div>
+                                                    <div className="relative z-10">
+                                                        <div className="text-blue-100 text-xs font-bold uppercase mb-1">Durability Info</div>
+                                                        <div className="text-3xl font-bold tracking-tight">{selectedProduct.details.foldingTime}</div>
+                                                        <div className="text-blue-200 text-xs mt-1">Extreme durability guaranteed</div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                            <div className="md:col-span-2 bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
+                                                <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                                                    <CheckCircle className="text-blue-600" size={20} />
+                                                    Key Features
+                                                </h3>
+                                                <div className="grid sm:grid-cols-2 gap-4">
+                                                    {selectedProduct.details.features.map((feature, idx) => (
+                                                        <div key={idx} className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors">
+                                                            <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                                                            <span className="text-sm text-slate-600 leading-relaxed">{feature}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                {selectedProduct.details.featureImage && (
+                                                    <div className="mt-8">
+                                                        <img
+                                                            src={selectedProduct.details.featureImage}
+                                                            alt={`${selectedProduct.name} 상세 이미지`}
+                                                            className="w-full rounded-xl border border-slate-100 shadow-sm"
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="space-y-6">
+                                                <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200/60">
+                                                    <h3 className="font-bold text-slate-800 mb-4 text-sm">Custom Options</h3>
+                                                    <ul className="space-y-3">
+                                                        {selectedProduct.details.customized.map((item, idx) => (
+                                                            <li key={idx} className="text-sm text-slate-600 flex items-center gap-2">
+                                                                <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
+                                                                {item}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                                <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                                                    <h3 className="font-bold text-slate-800 mb-4 text-sm">Compatible With</h3>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {selectedProduct.details.application.split(',').map((brand, idx) => (
+                                                            <span key={idx} className="px-3 py-1 bg-slate-100 text-slate-600 text-xs rounded-full font-medium border border-slate-200">
+                                                                {brand.trim()}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
             );
 
-            const ContactView = () => (
-                <div className="animate-fade-in pt-24 pb-20">
-                    <div className="container mx-auto px-4">
-                        <div className="max-w-3xl mx-auto">
-                            <div className="text-center mb-12">
-                                <h2 className="text-3xl font-bold text-gray-900 mb-4">커스텀 제작 문의</h2>
-                                <p className="text-gray-600">특수 사양 케이블 및 대량 주문 제작에 대해 문의해 주시면 신속히 답변 드리겠습니다.</p>
-                            </div>
+            
+            const ContactView = () => {
+                const [formData, setFormData] = React.useState({
+                    company: '',
+                    name: '',
+                    email: '',
+                    phone: '',
+                    product: '제품을 선택해주세요',
+                    message: ''
+                });
 
-                            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-                                <div className="grid md:grid-cols-3 bg-blue-900 text-white">
-                                    <div className="p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-blue-800">
-                                        <Phone className="mb-3 opacity-80" size={32} />
-                                        <div className="text-sm opacity-70 mb-1">전화 문의</div>
-                                        <div className="font-bold">010.9981.4073 or 010.7771.0710</div>
-                                    </div>
-                                    <div className="p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-blue-800">
-                                        <Mail className="mb-3 opacity-80" size={32} />
-                                        <div className="text-sm opacity-70 mb-1">이메일 문의</div>
-                                        <div className="font-bold">sales@araelectronics.com</div>
-                                    </div>
-                                    <div className="p-8 flex flex-col items-center justify-center text-center">
-                                        <MapPin className="mb-3 opacity-80" size={32} />
-                                        <div className="text-sm opacity-70 mb-1">방문 안내</div>
-                                        <div className="font-bold text-sm leading-relaxed">
-                                            본사 : 경기도 화성시 동탄구 동탄영천로 150 동탄실리콘앨리 C동(제조동) 301호<br />
-                                            R&amp;D : 경기도 화성시 동탄구 동탄기흥로 570-6 골든아이타워 626호<br />
-                                            공장 : 경기도 부천시 평천로 850번길 19
-                                        </div>
-                                    </div>
+                const handleChange = (e) => {
+                    const { name, value } = e.target;
+                    setFormData(prev => ({ ...prev, [name]: value }));
+                };
+
+                const handleSubmit = (e) => {
+                    e.preventDefault();
+                    
+                    if(!formData.name || !formData.email || !formData.message) {
+                        alert('담당자명, 이메일, 문의 내용은 필수 입력 사항입니다.');
+                        return;
+                    }
+
+                    const subject = encodeURIComponent(`[홈페이지 문의] ${formData.company} - ${formData.name}`);
+                    const body = encodeURIComponent(
+                        `회사명: ${formData.company}
+` +
+                        `담당자명: ${formData.name}
+` +
+                        `이메일: ${formData.email}
+` +
+                        `연락처: ${formData.phone}
+` +
+                        `문의 제품: ${formData.product}
+
+` +
+                        `문의 내용:
+${formData.message}`
+                    ).replace(/%5Cn/g, '%0D%0A'); // 줄바꿈 처리
+
+                    window.location.href = `mailto:sales@araelectronics.com?subject=${subject}&body=${body}`;
+                };
+
+                return (
+                    <div className="animate-fade-in pt-24 pb-20">
+                        <div className="container mx-auto px-4">
+                            <div className="max-w-3xl mx-auto">
+                                <div className="text-center mb-12">
+                                    <h2 className="text-3xl font-bold text-gray-900 mb-4">커스텀 제작 문의</h2>
+                                    <p className="text-gray-600">특수 사양 케이블 및 장비 솔루션 도입에 대해 문의해 주시면 신속히 답변 드리겠습니다.</p>
                                 </div>
 
-                                <div className="p-8 md:p-12">
-                                    <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                                        <div className="grid md:grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-2">회사명</label>
-                                                <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="회사명을 입력하세요" />
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-2">담당자명</label>
-                                                <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="담당자 성함을 입력하세요" />
+                                <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                                    <div className="grid md:grid-cols-3 bg-blue-900 text-white">
+                                        <div className="p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-blue-800">
+                                            <Phone className="mb-3 opacity-80" size={32} />
+                                            <div className="text-sm opacity-70 mb-1">전화 문의</div>
+                                            <div className="font-bold">010.9981.4073 or 010.7771.0710</div>
+                                        </div>
+                                        <div className="p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r border-blue-800">
+                                            <Mail className="mb-3 opacity-80" size={32} />
+                                            <div className="text-sm opacity-70 mb-1">이메일 문의</div>
+                                            <div className="font-bold">sales@araelectronics.com</div>
+                                        </div>
+                                        <div className="p-8 flex flex-col items-center justify-center text-center">
+                                            <MapPin className="mb-3 opacity-80" size={32} />
+                                            <div className="text-sm opacity-70 mb-1">방문 안내</div>
+                                            <div className="font-bold text-sm leading-relaxed">
+                                                본사 : 경기도 화성시 동탄구 동탄영천로 150 동탄실리콘앨리 C동(제조동) 301호<br />
+                                                R&amp;D : 경기도 화성시 동탄구 동탄기흥로 570-6 골든아이타워 626호<br />
+                                                공장 : 경기도 부천시 평천로 850번길 19
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <div className="grid md:grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-2">이메일</label>
-                                                <input type="email" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="email@example.com" />
+                                    <div className="p-8 md:p-12">
+                                        <form className="space-y-6" onSubmit={handleSubmit}>
+                                            <div className="grid md:grid-cols-2 gap-6">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">회사명</label>
+                                                    <input type="text" name="company" value={formData.company} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="회사명을 입력하세요" />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">담당자명</label>
+                                                    <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="담당자 성함을 입력하세요" />
+                                                </div>
                                             </div>
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 mb-2">연락처</label>
-                                                <input type="tel" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="010-1234-5678" />
+
+                                            <div className="grid md:grid-cols-2 gap-6">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">이메일</label>
+                                                    <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="email@example.com" />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">연락처</label>
+                                                    <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="010-1234-5678" />
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">문의 제품 / 사양</label>
-                                            <select className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all mb-4">
-                                                <option>제품을 선택해주세요</option>
-                                                {productData.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                                                <option value="custom">기타 / 커스텀 제작</option>
-                                            </select>
-                                            <textarea className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all h-32" placeholder="문의하실 내용을 자세히 적어주세요."></textarea>
-                                        </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-2">문의 제품 / 사양</label>
+                                                <select name="product" value={formData.product} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all mb-4">
+                                                    <option>제품을 선택해주세요</option>
+                                                    {productData.map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
+                                                    <option value="custom">기타 / 커스텀 제작</option>
+                                                </select>
+                                                <textarea name="message" value={formData.message} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all h-32" placeholder="문의하실 내용을 자세히 적어주세요."></textarea>
+                                            </div>
 
-                                        <div className="text-center pt-4">
-                                            <button className="bg-blue-900 text-white font-bold py-4 px-12 rounded-lg hover:bg-blue-800 transition-colors shadow-lg w-full md:w-auto">
-                                                문의하기
-                                            </button>
-                                        </div>
-                                    </form>
+                                            <div className="text-center pt-4">
+                                                <button type="submit" className="bg-blue-900 text-white font-bold py-4 px-12 rounded-lg hover:bg-blue-800 transition-colors shadow-lg w-full md:w-auto">
+                                                    문의하기
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            );
+                );
+            };
+
 
             return (
                 <div className="min-h-screen flex flex-col font-sans text-gray-800 bg-white">
-                    {/* Header */}
                     <header className={`fixed w-full z-50 transition-all duration-300 ${(isScrolled || currentPage !== 'home') ? 'bg-white shadow-md py-2' : 'bg-transparent py-4 text-white'}`}>
                         <div className="container mx-auto px-4">
                             <div className="flex justify-between items-center">
-                                {/* Logo */}
                                 <div 
                                     className="cursor-pointer flex items-center gap-2"
                                     onClick={() => navigateTo('home')}
@@ -857,106 +983,47 @@
                                         ARA <span className="font-light">ELECTRONICS</span>
                                     </div>
                                 </div>
-
-                                {/* Desktop Nav */}
                                 <nav className="hidden md:flex items-center space-x-8">
-                                    <button 
-                                        onClick={() => navigateTo('home')}
-                                        className={`font-medium hover:text-blue-400 transition-colors ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}
-                                    >
-                                        홈
-                                    </button>
-
-                                    <button 
-                                        onClick={() => navigateTo('company')}
-                                        className={`font-medium hover:text-blue-400 transition-colors ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}
-                                    >
-                                        회사소개
-                                    </button>
-
-                                    {/* Product Info with Mega Menu */}
+                                    <button onClick={() => navigateTo('home')} className={`font-medium hover:text-blue-400 transition-colors ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}>홈</button>
+                                    <button onClick={() => navigateTo('company')} className={`font-medium hover:text-blue-400 transition-colors ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}>회사소개</button>
                                     <div className="relative group">
-                                        <button 
-                                            onClick={() => navigateTo('product', productData[0])}
-                                            className={`font-medium hover:text-blue-400 transition-colors flex items-center gap-1 py-4 ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}
-                                        >
-                                            제품정보 <ChevronDown size={14} />
-                                        </button>
-
-                                        {/* Dropdown Tree Menu (Header) */}
+                                        <button onClick={() => navigateTo('product', productData[0])} className={`font-medium hover:text-blue-400 transition-colors flex items-center gap-1 py-4 ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}>제품정보 <ChevronDown size={14} /></button>
                                         <div className="dropdown-menu absolute left-1/2 -translate-x-1/2 pt-2 w-[22rem]">
                                             <div className="bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
-                                                {/* 케이블 */}
                                                 <div className="px-4 pt-4 pb-3 border-b border-gray-100">
                                                     <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">케이블</div>
                                                     <div className="space-y-1">
-                                                        {productData.map(product => (
-                                                            <a
-                                                                key={product.id}
-                                                                onClick={(e) => { e.preventDefault(); navigateTo('product', product); }}
-                                                                className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer flex justify-between items-center group/item"
-                                                            >
-                                                                {product.name}
-                                                                <ChevronRight size={14} className="opacity-0 group-hover/item:opacity-100 transition-opacity" />
-                                                            </a>
+                                                        {productData.filter(p => p.id.includes('cable') || p.id === 'camera-link' || p.id === 'high-flex-gige' || p.id === 'coaxpress').map(product => (
+                                                            <a key={product.id} onClick={(e) => { e.preventDefault(); navigateTo('product', product); }} className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer flex justify-between items-center group/item">{product.name}<ChevronRight size={14} className="opacity-0 group-hover/item:opacity-100 transition-opacity" /></a>
                                                         ))}
                                                     </div>
                                                 </div>
-
-                                                {/* 산업용 마킹기 */}
                                                 <div className="px-4 pt-4 pb-3 border-b border-gray-100">
                                                     <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">산업용 마킹기</div>
                                                     <div className="space-y-1">
                                                         {markingMenu.map(item => (
-                                                            <a
-                                                                key={item.id}
-                                                                onClick={(e) => { e.preventDefault(); }}
-                                                                className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-slate-50 hover:text-slate-900 cursor-default"
-                                                            >
-                                                                {item.name}
-                                                            </a>
+                                                            <a key={item.id} onClick={(e) => { e.preventDefault(); }} className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-slate-50 hover:text-slate-900 cursor-default">{item.name}</a>
                                                         ))}
                                                     </div>
                                                 </div>
-
-                                                {/* 자동화 주변기기 */}
                                                 <div className="px-4 pt-4 pb-4">
                                                     <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">자동화 주변기기</div>
                                                     <div className="grid grid-cols-2 gap-1">
-                                                        {automationMenu.map(item => (
-                                                            <a
-                                                                key={item.id}
-                                                                onClick={(e) => { e.preventDefault(); }}
-                                                                className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-slate-50 hover:text-slate-900 cursor-default"
-                                                            >
-                                                                {item.name}
-                                                            </a>
-                                                        ))}
+                                                        {automationMenu.map(item => {
+                                                            const product = productData.find(p => p.id === item.id);
+                                                            return (
+                                                            <a key={item.id} onClick={(e) => { e.preventDefault(); if(product) navigateTo('product', product); }} className="block px-3 py-2 rounded-lg text-sm text-gray-700 hover:bg-slate-50 hover:text-slate-900 cursor-pointer">{item.name}</a>
+                                                        )})}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <button 
-                                        onClick={() => navigateTo('contact')}
-                                        className={`font-medium hover:text-blue-400 transition-colors ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}
-                                    >
-                                        커스텀제작 문의
-                                    </button>
+                                    <button onClick={() => navigateTo('contact')} className={`font-medium hover:text-blue-400 transition-colors ${(isScrolled || currentPage !== 'home') ? 'text-gray-700' : 'text-white/90'}`}>커스텀제작 문의</button>
                                 </nav>
-
-                                {/* Mobile Menu Button */}
-                                <button 
-                                    className="md:hidden text-gray-500"
-                                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                >
-                                    <Menu size={24} color={(isScrolled || currentPage !== 'home') ? '#1e3a8a' : 'white'} />
-                                </button>
+                                <button className="md:hidden text-gray-500" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}><Menu size={24} color={(isScrolled || currentPage !== 'home') ? '#1e3a8a' : 'white'} /></button>
                             </div>
                         </div>
-
-                        {/* Mobile Menu (Global Nav) */}
                         {isMobileMenuOpen && (
                             <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t">
                                 <div className="flex flex-col p-4 space-y-4">
@@ -966,45 +1033,27 @@
                                         <div>
                                             <div className="text-xs font-bold text-gray-400 uppercase mb-2">케이블</div>
                                             <div className="space-y-2">
-                                                {productData.map(product => (
-                                                    <button 
-                                                        key={product.id}
-                                                        onClick={() => navigateTo('product', product)}
-                                                        className="block text-sm text-gray-600 py-1"
-                                                    >
-                                                        {product.name}
-                                                    </button>
+                                                {productData.filter(p => p.id.includes('cable') || p.id === 'camera-link' || p.id === 'high-flex-gige' || p.id === 'coaxpress').map(product => (
+                                                    <button key={product.id} onClick={() => navigateTo('product', product)} className="block text-sm text-gray-600 py-1">{product.name}</button>
                                                 ))}
                                             </div>
                                         </div>
-
                                         <div>
                                             <div className="text-xs font-bold text-gray-400 uppercase mb-2">산업용 마킹기</div>
                                             <div className="space-y-2">
                                                 {markingMenu.map(item => (
-                                                    <button
-                                                        key={item.id}
-                                                        onClick={() => alert('준비중입니다.')} 
-                                                        className="block text-sm text-gray-600 py-1"
-                                                    >
-                                                        {item.name}
-                                                    </button>
+                                                    <button key={item.id} onClick={() => alert('준비중입니다.')} className="block text-sm text-gray-600 py-1">{item.name}</button>
                                                 ))}
                                             </div>
                                         </div>
-
                                         <div>
                                             <div className="text-xs font-bold text-gray-400 uppercase mb-2">자동화 주변기기</div>
                                             <div className="space-y-2">
-                                                {automationMenu.map(item => (
-                                                    <button
-                                                        key={item.id}
-                                                        onClick={() => alert('준비중입니다.')} 
-                                                        className="block text-sm text-gray-600 py-1"
-                                                    >
-                                                        {item.name}
-                                                    </button>
-                                                ))}
+                                                {automationMenu.map(item => {
+                                                    const product = productData.find(p => p.id === item.id);
+                                                    return (
+                                                    <button key={item.id} onClick={() => { if(product) navigateTo('product', product); else alert('준비중입니다.'); }} className="block text-sm text-gray-600 py-1 text-left">{item.name}</button>
+                                                )})}
                                             </div>
                                         </div>
                                     </div>
@@ -1013,34 +1062,23 @@
                             </div>
                         )}
                     </header>
-
-                    {/* Main Content */}
                     <main className="flex-grow">
                         {currentPage === 'home' && <HomeView />}
                         {currentPage === 'company' && <CompanyView />}
                         {currentPage === 'product' && <ProductView />}
                         {currentPage === 'contact' && <ContactView />}
                     </main>
-
-                    {/* Footer */}
                     <footer className="bg-gray-900 text-white pt-16 pb-8">
                         <div className="container mx-auto px-4">
                             <div className="grid md:grid-cols-4 gap-8 mb-12">
                                 <div className="col-span-1 md:col-span-2">
                                     <h2 className="text-2xl font-bold mb-4 tracking-tighter">ARA ELECTRONICS</h2>
-                                    <p className="text-gray-400 max-w-sm mb-6">
-                                        산업 자동화 및 머신 비전을 위한 최고의 케이블 솔루션을 제공합니다. 고객의 성공을 위한 신뢰할 수 있는 파트너가 되겠습니다.
-                                    </p>
+                                    <p className="text-gray-400 max-w-sm mb-6">산업 자동화 및 머신 비전을 위한 최고의 케이블 솔루션을 제공합니다. 고객의 성공을 위한 신뢰할 수 있는 파트너가 되겠습니다.</p>
                                     <div className="flex gap-4">
-                                        <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors cursor-pointer">
-                                            <Phone size={18} />
-                                        </div>
-                                        <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors cursor-pointer">
-                                            <Mail size={18} />
-                                        </div>
+                                        <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors cursor-pointer"><Phone size={18} /></div>
+                                        <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-colors cursor-pointer"><Mail size={18} /></div>
                                     </div>
                                 </div>
-
                                 <div>
                                     <h3 className="font-bold text-lg mb-4">빠른 링크</h3>
                                     <ul className="space-y-2 text-gray-400">
@@ -1049,33 +1087,16 @@
                                         <li><button onClick={() => navigateTo('contact')} className="hover:text-blue-400 transition-colors">견적문의</button></li>
                                     </ul>
                                 </div>
-
                                 <div>
                                     <h3 className="font-bold text-lg mb-4">연락처 정보</h3>
                                     <ul className="space-y-3 text-gray-400">
-                                        <li className="flex items-start gap-3">
-                                            <MapPin size={18} className="mt-1 flex-shrink-0" />
-                                            <span className="leading-relaxed">
-                                                본사 : 경기도 화성시 동탄구 동탄영천로 150 동탄실리콘앨리 C동(제조동) 301호<br />
-                                                R&amp;D : 경기도 화성시 동탄구 동탄기흥로 570-6 골든아이타워 626호<br />
-                                                공장 : 경기도 부천시 평천로 850번길 19
-                                            </span>
-                                        </li>
-                                        <li className="flex items-center gap-3">
-                                            <Phone size={18} className="flex-shrink-0" />
-                                            <span>010.9981.4073 or 010.7771.0710</span>
-                                        </li>
-                                        <li className="flex items-center gap-3">
-                                            <Mail size={18} className="flex-shrink-0" />
-                                            <span>sales@araelectronics.com</span>
-                                        </li>
+                                        <li className="flex items-start gap-3"><MapPin size={18} className="mt-1 flex-shrink-0" /><span className="leading-relaxed">본사 : 경기도 화성시 동탄구 동탄영천로 150 동탄실리콘앨리 C동(제조동) 301호<br />R&amp;D : 경기도 화성시 동탄기흥로 570-6 골든아이타워 626호<br />공장 : 경기도 부천시 평천로 850번길 19</span></li>
+                                        <li className="flex items-center gap-3"><Phone size={18} className="flex-shrink-0" /><span>010.9981.4073 or 010.7771.0710</span></li>
+                                        <li className="flex items-center gap-3"><Mail size={18} className="flex-shrink-0" /><span>sales@araelectronics.com</span></li>
                                     </ul>
                                 </div>
                             </div>
-
-                            <div className="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
-                                <p>&copy; 2024 ARA Electronics. All rights reserved.</p>
-                            </div>
+                            <div className="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm"><p>&copy; 2024 ARA Electronics. All rights reserved.</p></div>
                         </div>
                     </footer>
                 </div>
